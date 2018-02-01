@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>CommonMark Test</title>
+</head>
+
+<body>
+
+    <div id="parsed"></div>
+
+    <script src="../js/commonmark.min.js"></script>
+    <script>
+
+        (function () {
+            let output = document.getElementById('parsed');
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        let reader = new commonmark.Parser();
+                        let writer = new commonmark.HtmlRenderer();
+                        let parsed = reader.parse(xhr.responseText);
+                        let result = writer.render(parsed);
+                        output.innerHTML = result;
+                    }
+                    else {
+                        console.error('There was a problem with the request.');
+                    }
+                }
+
+            }
+            xhr.open('GET', 'sample.md.txt');
+            xhr.send();
+        })();
+
+    </script>
+
+</body>
