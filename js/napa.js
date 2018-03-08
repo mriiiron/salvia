@@ -3,6 +3,7 @@
 
     function ajaxGet(url, returnType, callback) {
         let xhr = new XMLHttpRequest();
+        xhr.responseType = returnType;
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
