@@ -3,24 +3,31 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link href="./css/default.css" rel="stylesheet" type="text/css" />
     <title>Napa.js</title>
 </head>
 
 <body>
 
-    <ul id="post-list"></ul>
+    <div id="napa-post-list"></div>
+    <div id="napa-post"></div>
+
 
     <script src="./js/commonmark.min.js"></script>
     <script src="./js/napa.js"></script>
     <script>
         (function () {
-            let pl = new napa.PostList({
-                el: 'post-list',
-                list: [
+            let pl = new napa.Core({
+                postList: {
+                    el: '#napa-post-list'
+                },
+                post: {
+                    el: '#napa-post'
+                },
+                data: [
                     'sample'
                 ]
             });
-            pl.render();
         })();
     </script>
 

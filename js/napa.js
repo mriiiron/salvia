@@ -8,27 +8,31 @@
         };
 
 
-        function NAPAPostList(desc) {
-            this.el = desc.el,
-            this.list = desc.list
-        }
-
-        NAPAPostList.prototype.render = function () {
+        function NAPACore(desc) {
             let me = this;
-            let ul = document.getElementById(me.el);
-            for (let i = 0; i < me.list.length; i++) {
+            me.postList = {
+                el: desc.postList.el
+            };
+            me.post = {
+                el: desc.post.el
+            };
+            me.data = desc.data;
+            let ul = document.createElement('ul');
+            for (let i = 0; i < me.data.length; i++) {
                 let li = document.createElement('li');
-                li.innerHTML = '<a href="./post.html#' + me.list[i] + '">' + me.list[i] + '</a>';
+                li.innerHTML = '<a href="#' + me.data[i] + '">' + me.data[i] + '</a>';
                 ul.appendChild(li);
             }
-        };
-
-
-        function NAPAPost(desc) {
-            this.el = desc.el;
+            ul.addEventListener('click', function (event) {
+                if (event.target.tagName.toLowerCase() === 'a') {
+                    let a = event.target;
+                    me.request(a.hash, () => console.log('Request completed.'));
+                }
+            });
+            document.querySelector(this.postList.el).appendChild(ul);
         }
 
-        NAPAPost.prototype.request = function (hash, callback) {
+        NAPACore.prototype.request = function (hash, callback) {
             let me = this;
             let xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
@@ -38,21 +42,20 @@
                         let writer = new commonmark.HtmlRenderer();
                         let ast = reader.parse(xhr.responseText);
                         let html = writer.render(ast);
-                        document.getElementById(me.el).innerHTML = html;
+                        document.querySelector(me.post.el).innerHTML = html;
                         callback();
                     }
                     else {
-                        console.error('NAPAPost: There was a problem with the request.');
+                        console.error('NAPA: There was a problem with the request.');
                     }
                 }
             }
-            xhr.open('GET', config.postsPath + hash + '.md.txt');
+            xhr.open('GET', config.postsPath + hash.substr(1) + '.md.txt');
             xhr.send();
         };
 
         return {
-            PostList: NAPAPostList,
-            Post: NAPAPost
+            Core: NAPACore
         }
 
     }
