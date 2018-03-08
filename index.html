@@ -9,24 +9,15 @@
 
 <body>
 
-    <div id="napa-post-list"></div>
-    <div id="napa-post"></div>
+    <div id="feed"></div>
 
 
     <script src="./js/commonmark.min.js"></script>
     <script src="./js/napa.js"></script>
     <script>
         (function () {
-            let pl = new napa.Core({
-                postList: {
-                    el: '#napa-post-list'
-                },
-                post: {
-                    el: '#napa-post'
-                },
-                data: [
-                    'sample'
-                ]
+            let pl = new napa.Feed({
+                el: '#feed'
             });
         })();
     </script>

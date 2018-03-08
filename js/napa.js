@@ -1,61 +1,75 @@
 (function (window, commonmark) {
     'use strict'
 
+    function ajaxGet(url, returnType, callback) {
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    callback(xhr.response);
+                }
+                else {
+                    console.error('AJAX request failed.');
+                }
+            }
+        }
+        xhr.open('GET', url);
+        xhr.send();
+    }
+
     function Napa() {
 
         const config = {
+            configFile: './napa.config.json',
             postsPath: './posts/'
         };
 
 
-        function NAPACore(desc) {
+        function NAPAFeed(desc) {
             let me = this;
-            me.postList = {
-                el: desc.postList.el
-            };
-            me.post = {
-                el: desc.post.el
-            };
-            me.data = desc.data;
+            me.el = desc.el;
+            ajaxGet(config.configFile, 'json', function (res) {
+                me.render(res.posts);
+            });
+        }
+
+        NAPAFeed.prototype.render = function (data) {
             let ul = document.createElement('ul');
-            for (let i = 0; i < me.data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
                 let li = document.createElement('li');
-                li.innerHTML = '<a href="#' + me.data[i] + '">' + me.data[i] + '</a>';
+                li.innerHTML = '<a href="#' + data[i] + '">' + data[i] + '</a>';
                 ul.appendChild(li);
             }
             ul.addEventListener('click', function (event) {
                 if (event.target.tagName.toLowerCase() === 'a') {
                     let a = event.target;
-                    me.request(a.hash, () => console.log('Request completed.'));
+                    // me.request(a.hash, () => console.log('Request completed.'));
                 }
             });
             document.querySelector(this.postList.el).appendChild(ul);
         }
 
-        NAPACore.prototype.request = function (hash, callback) {
+        NAPAFeed.prototype.request = function (hash, callback) {
             let me = this;
-            let xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        let reader = new commonmark.Parser();
-                        let writer = new commonmark.HtmlRenderer();
-                        let ast = reader.parse(xhr.responseText);
-                        let html = writer.render(ast);
-                        document.querySelector(me.post.el).innerHTML = html;
-                        callback();
-                    }
-                    else {
-                        console.error('NAPA: There was a problem with the request.');
-                    }
-                }
-            }
-            xhr.open('GET', config.postsPath + hash.substr(1) + '.md.txt');
-            xhr.send();
+            ajaxGet(config.postsPath + hash.substr(1) + '.md.txt', 'text', function (res) {
+                let reader = new commonmark.Parser();
+                let writer = new commonmark.HtmlRenderer();
+                let ast = reader.parse(res);
+                let html = writer.render(ast);
+                document.querySelector(me.post.el).innerHTML = html;
+                callback();
+            });
         };
 
+
+        function NAPAArchive () {
+
+        }
+
+
         return {
-            Core: NAPACore
+            Feed: NAPAFeed,
+            Archive: NAPAArchive
         }
 
     }
