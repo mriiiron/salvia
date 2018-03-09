@@ -1,5 +1,7 @@
 {
-    "posts": [
-        "sample"
+    "postKeys": [
+        "sample1",
+        "sample2",
+        "trouble"
     ]
 }

@@ -4,19 +4,23 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link href="./css/default.css" rel="stylesheet" type="text/css" />
-    <title>Home | Napa.js</title>
+    <title>Post | Napa.js</title>
 </head>
 
 <body>
 
     <header id="header"></header>
-    <main id="feed"></main>
+    <main class="napa-container">
+        <article id="post"></article>
+    </main>
+
 
     <script src="./js/commonmark.min.js"></script>
     <script src="./js/napa.js"></script>
     <script>
         let header = new napa.Header({ el: '#header' });
-        let feed = new napa.Feed({ el: '#feed' });
+        let post = new napa.Post({ el: '#post' });
+        post.request(window.location.hash.substr(1));
     </script>
 
 </body>
