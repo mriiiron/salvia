@@ -38,7 +38,7 @@
         function NAPAHeader(desc) {
             this.el = desc.el;
             let titleNode = quickCreate('div', 'napa-title', 'SAMPLE BLOG TITLE');
-            let navNode = quickCreate('nav', 'napa-nav');
+            let navNode = quickCreate('nav', 'napa-nav', '<ul><li><a href="#">Home</a></li><li><a href="#">Archive</a></li><li><a href="#">Tags</a></li></ul>');
             let headerInnerNode = quickCreate('div', 'napa-header-inner');
             headerInnerNode.appendChild(titleNode);
             headerInnerNode.appendChild(navNode);
@@ -54,12 +54,12 @@
             feedBaseNode.className = 'napa-container';
             ajaxGet(config.configFile, 'json', function (status, response) {
                 if (status == 200) {
-                    for (let i = 0; i < response.postKeys.length; i++) {
+                    for (let i = 0; i < response.posts.length; i++) {
                         let postBaseNode = document.createElement('article');
                         postBaseNode.className = 'napa-post';
                         let post = new NAPAPost({ node: postBaseNode });
                         feedBaseNode.appendChild(post.node);
-                        post.request(response.postKeys[i], function (post) {
+                        post.request(response.posts[i], function (post) {
                             console.log("Loaded: ", post.title)
                         });
                     }
@@ -91,31 +91,19 @@
             let me = this;
             ajaxGet(config.postsPath + key + '.md.txt', 'text', function (status, response) {
                 if (status == 200) {
-                    let reader = new commonmark.Parser();
-                    let writer = new commonmark.HtmlRenderer();
-                    let ast = reader.parse(response);
-                    let isMetaValid = false;
-                    if (ast.firstChild.type == 'heading' && ast.firstChild.level == 1 && ast.firstChild.next && ast.firstChild.next.type == 'paragraph') {
-                        let metaRaw = ast.firstChild.next.firstChild.literal;
-                        if (metaRaw.startsWith('{') && metaRaw.endsWith('}')) {
-                            let splitted = metaRaw.substr(1, metaRaw.length - 2).split('|');
-                            if (splitted.length == 2) {
-                                me.title = ast.firstChild.firstChild.literal;
-                                me.date = splitted[0].trim();
-                                me.author = splitted[1].trim();
-                                isMetaValid = true;
-                            }
-                        }
-                    }
-                    if (isMetaValid) {
-                        ast.firstChild.unlink();
-                        ast.firstChild.unlink();
-                        let html = writer.render(ast);
-                        me.html = html;
+                    let meta = decodeURIComponent(key).split('_');
+                    if (meta.length == 3) {
+                        me.title = meta[2];
+                        me.date = meta[0];
+                        me.author = meta[1];
+                        let reader = new commonmark.Parser();
+                        let writer = new commonmark.HtmlRenderer();
+                        let ast = reader.parse(response);
+                        me.html = writer.render(ast);
                         me.render();
                     }
                     else {
-                        me.node.innerHTML = 'NAPA: Cannot render post "' + key + '", metadata format is not valid.';
+                        me.node.innerHTML = 'NAPA: Cannot render post "' + key + '", format is not valid.';
                         me.node.className += ' error';
                     }
                 }

@@ -1,13 +1,8 @@
-Sample Post Title
-=================
-
-{ 3/9/2018 | mriiiron }
-
 ### Meatloaf
 
 Spicy jalapeno bacon ipsum dolor amet boudin doner beef pork cow frankfurter jowl tail meatball pork loin ham hock, alcatra chicken. Andouille meatball tail, alcatra jerky turducken pork chop turkey strip steak bresaola ham hock. Cow tenderloin chicken, shankle cupim turkey chuck andouille kevin ham. Filet mignon ham pig doner ribeye, kielbasa turducken. Leberkas beef kielbasa tongue picanha cow rump landjaeger boudin buffalo chicken pork chop turducken.
 
-{ END-OF-ABSTRACT }
+{{ Napa.EndOfAbstract }}
 
 ### Sirloin
 

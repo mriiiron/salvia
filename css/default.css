@@ -13,6 +13,7 @@ body {
     margin: 0 auto;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .napa-title {
@@ -26,4 +27,15 @@ body {
 
 .napa-post.error {
     color: red;
+}
+
+.napa-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.napa-nav ul li {
+    display: inline-block;
+    padding: 0 10px;
 }

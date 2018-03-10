@@ -1,8 +1,3 @@
-Sample Post Title 2
-===================
-
-{ 3/9/2018 | mriiiron }
-
 ### Sample List
 - item 1
 - item 2
@@ -11,7 +6,7 @@ Sample Post Title 2
 ### Sample Code Block
     hello world
 
-{ END-OF-ABSTRACT }
+{{ Napa.EndOfAbstract }}
 
 Fatback tenderloin tri-tip frankfurter alcatra ribeye spare ribs. Sirloin chuck venison meatball, ribeye capicola boudin leberkas chicken tri-tip shankle. Shank shankle pancetta, corned beef bresaola tenderloin hamburger sirloin doner cupim. Shank picanha doner sirloin andouille drumstick meatloaf brisket burgdoggen shoulder. Filet mignon spare ribs corned beef drumstick pork chop. Tenderloin t-bone biltong, turkey sausage landjaeger pork loin pig cupim doner jowl leberkas beef ribs frankfurter. Rump flank ham buffalo, cupim sausage t-bone picanha pork chop andouille ribeye swine venison pork belly fatback.
 
