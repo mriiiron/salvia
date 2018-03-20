@@ -26,6 +26,10 @@
         return element;
     }
 
+    function extractMustache(input) {
+        return input.replace(/^{+|}+$/g, '').trim();
+    }
+
     function Napa() {
 
         const config = {
@@ -59,9 +63,7 @@
                         postBaseNode.className = 'napa-post';
                         let post = new NAPAPost({ node: postBaseNode });
                         feedBaseNode.appendChild(post.node);
-                        post.request(response.posts[i], function (post) {
-                            console.log("Loaded: ", post.title)
-                        });
+                        post.request(response.posts[i], { abstractOnly: true });
                     }
                 }
                 else {
@@ -87,7 +89,7 @@
             this.html = null;
         }
 
-        NAPAPost.prototype.request = function (key, callback) {
+        NAPAPost.prototype.request = function (key, options) {
             let me = this;
             ajaxGet(config.postsPath + key + '.md.txt', 'text', function (status, response) {
                 if (status == 200) {
@@ -99,6 +101,25 @@
                         let reader = new commonmark.Parser();
                         let writer = new commonmark.HtmlRenderer();
                         let ast = reader.parse(response);
+
+
+                        let walker = ast.walker();
+                        let event;
+                        while ((event = walker.next())) {
+                            let isAbstractBreakFound = false;
+                            let node = event.node;
+                            if (event.entering && node.type == 'text' && node.literal.startsWith('{{') && node.literal.endsWith('}}')) {
+                                let param = extractMustache(node.literal);
+                                switch (param) {
+                                    case 'Napa.EndOfAbstract':
+                                        isAbstractBreakFound = true;
+                                        break;
+                                }
+                            }
+                        }
+
+
+
                         me.html = writer.render(ast);
                         me.render();
                     }
@@ -111,7 +132,6 @@
                     me.node.innerHTML = 'NAPA: Request to post "' + key + '" failed.';
                     me.node.className += ' error';
                 }
-                if (typeof(callback) == 'function') { callback(me); }
             });
         };
 
