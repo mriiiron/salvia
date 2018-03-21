@@ -103,20 +103,29 @@
                         let ast = reader.parse(response);
 
 
-                        let walker = ast.walker();
-                        let event;
-                        while ((event = walker.next())) {
-                            let isAbstractBreakFound = false;
-                            let node = event.node;
-                            if (event.entering && node.type == 'text' && node.literal.startsWith('{{') && node.literal.endsWith('}}')) {
-                                let param = extractMustache(node.literal);
-                                switch (param) {
-                                    case 'Napa.EndOfAbstract':
-                                        isAbstractBreakFound = true;
-                                        break;
+                        if (options.abstractOnly) {
+                            let walker = ast.walker();
+                            let abstractBreaker = null;
+                            let event;
+                            while ((event = walker.next())) {
+                                if (abstractBreaker) { break; }
+                                let node = event.node;
+                                if (event.entering && node.type == 'text' && node.literal.startsWith('{{') && node.literal.endsWith('}}')) {
+                                    let param = extractMustache(node.literal);
+                                    switch (param) {
+                                        case 'Napa.EndOfAbstract':
+                                            abstractBreaker = node.parent;
+                                            break;
+                                    }
                                 }
                             }
+                            if (abstractBreaker) {
+                                while (abstractBreaker.next) { abstractBreaker.next.unlink() }
+                                abstractBreaker.firstChild.literal = 'ANCHOR||#||Read more ...';
+                            }
                         }
+
+
 
 
 
