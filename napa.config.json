@@ -1,7 +1,10 @@
 {
-    "meta": {
-        "title": "Napa.js"
+    "blog": {
+        "title": "napa.js"
     },
+    "pages": [
+        { "text": "About", "href": "./about.html" }
+    ],
     "posts": [
         "20180309||mriiiron||s1||Sample 1",
         "20180310||mriiiron||s2",

@@ -11,12 +11,18 @@
 
     <header id="header"></header>
     <main id="feed"></main>
+    <footer id="footer"></footer>
 
     <script src="./js/commonmark.min.js"></script>
     <script src="./js/napa.js"></script>
     <script>
-        let header = new napa.Header({ el: '#header' });
-        let feed = new napa.Feed({ el: '#feed' });
+        let blog = new Napa({
+            el: {
+                header: '#header',
+                feed: '#feed',
+                footer: '#footer'
+            }
+        });
     </script>
 
 </body>

@@ -1,10 +1,23 @@
+@font-face {
+    font-family: "Open Sans";
+    src: url("OpenSans-Regular.ttf");
+}
+
+
+html, body {
+    height: 100%;
+}
+
 body {
+    font-family: "Lato", "Open Sans", "Microsoft YaHei", Arial, sans-serif;
     margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .napa-header {
-    height: 90px;
     background-color: #eee;
+    flex: 0 0 90px;
 }
 
 .napa-header-inner {
@@ -16,23 +29,36 @@ body {
     justify-content: space-between;
 }
 
+.napa-footer {
+    background-color: #eee;
+    flex: 0 0 auto;
+}
+
+.napa-footer-inner {
+    width: 900px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 10px 0;
+}
+
 .napa-title {
     font-size: 2em;
 }
 
 .napa-container {
     width: 900px;
-    margin: 80px auto 0 auto;
+    margin: 50px auto 0 auto;
+    flex: 1 0 auto;
 }
 
 .napa-container a {
-    
+
 }
 
 .napa-post {
     margin-bottom: 50px;
     padding-bottom: 25px;
-    border-bottom: 1px solid silver;
+    border-bottom: 1px solid #eee;
 }
 
 .napa-post.error {
