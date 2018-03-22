@@ -101,8 +101,6 @@
                         let reader = new commonmark.Parser();
                         let writer = new commonmark.HtmlRenderer();
                         let ast = reader.parse(response);
-
-
                         if (options.abstractOnly) {
                             let walker = ast.walker();
                             let abstractBreaker = null;
@@ -121,14 +119,9 @@
                             }
                             if (abstractBreaker) {
                                 while (abstractBreaker.next) { abstractBreaker.next.unlink() }
-                                abstractBreaker.firstChild.literal = 'ANCHOR||#||Read more ...';
+                                abstractBreaker.firstChild.literal = '[[Napa.ReadMore]]';
                             }
                         }
-
-
-
-
-
                         me.html = writer.render(ast);
                         me.render();
                     }
@@ -145,15 +138,9 @@
         };
 
         NAPAPost.prototype.render = function () {
-            let postTitle = document.createElement('h1');
-            postTitle.className = 'napa-post-title';
-            postTitle.innerHTML = this.title;
-            let postMeta = document.createElement('p');
-            postMeta.className = 'napa-post-meta';
-            postMeta.innerHTML = '<i><span class="napa-post-date">' + this.date + '</span> by <span class="napa-post-author">' + this.author + '</span></i>';
-            let postContent = document.createElement('div');
-            postContent.className = 'napa-post-content';
-            postContent.innerHTML = this.html;
+            let postTitle = quickCreate('h1', 'napa-post-title', '<a href="#">' + this.title + '</a>');
+            let postMeta = quickCreate('p', 'napa-post-meta', '<i><span class="napa-post-date">' + this.date + '</span> by <span class="napa-post-author">' + this.author + '</span></i>');
+            let postContent = quickCreate('div', 'napa-post-content', this.html);
             this.node.className = 'napa-post';
             this.node.innerHTML = '';
             this.node.appendChild(postTitle);
