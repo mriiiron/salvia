@@ -59,8 +59,7 @@
             ajaxGet(config.configFile, 'json', function (status, response) {
                 if (status == 200) {
                     for (let i = 0; i < response.posts.length; i++) {
-                        let postBaseNode = document.createElement('article');
-                        postBaseNode.className = 'napa-post';
+                        let postBaseNode = quickCreate('article', 'napa-post');
                         let post = new NAPAPost({ node: postBaseNode });
                         feedBaseNode.appendChild(post.node);
                         post.request(response.posts[i], { abstractOnly: true });
@@ -89,46 +88,43 @@
             this.html = null;
         }
 
-        NAPAPost.prototype.request = function (key, options) {
+        NAPAPost.prototype.request = function (data, options) {
             let me = this;
+
+            let meta = data.split('||');
+            me.date = meta[0];
+            me.author = meta[1];
+            let key = meta[2];
+            me.title = (meta[3] ? meta[3] : key);
+
             ajaxGet(config.postsPath + key + '.md.txt', 'text', function (status, response) {
                 if (status == 200) {
-                    let meta = decodeURIComponent(key).split('_');
-                    if (meta.length == 3) {
-                        me.title = meta[2];
-                        me.date = meta[0];
-                        me.author = meta[1];
-                        let reader = new commonmark.Parser();
-                        let writer = new commonmark.HtmlRenderer();
-                        let ast = reader.parse(response);
-                        if (options.abstractOnly) {
-                            let walker = ast.walker();
-                            let abstractBreaker = null;
-                            let event;
-                            while ((event = walker.next())) {
-                                if (abstractBreaker) { break; }
-                                let node = event.node;
-                                if (event.entering && node.type == 'text' && node.literal.startsWith('{{') && node.literal.endsWith('}}')) {
-                                    let param = extractMustache(node.literal);
-                                    switch (param) {
-                                        case 'Napa.EndOfAbstract':
-                                            abstractBreaker = node.parent;
-                                            break;
-                                    }
+                    let reader = new commonmark.Parser();
+                    let writer = new commonmark.HtmlRenderer();
+                    let ast = reader.parse(response);
+                    if (options.abstractOnly) {
+                        let walker = ast.walker();
+                        let abstractBreaker = null;
+                        let event;
+                        while ((event = walker.next())) {
+                            if (abstractBreaker) { break; }
+                            let node = event.node;
+                            if (event.entering && node.type == 'text' && node.literal.startsWith('{{') && node.literal.endsWith('}}')) {
+                                let napaTags = extractMustache(node.literal);
+                                switch (napaTags) {
+                                    case 'Napa.EndOfAbstract':
+                                        abstractBreaker = node.parent;
+                                        break;
                                 }
                             }
-                            if (abstractBreaker) {
-                                while (abstractBreaker.next) { abstractBreaker.next.unlink() }
-                                abstractBreaker.firstChild.literal = '[[Napa.ReadMore]]';
-                            }
                         }
-                        me.html = writer.render(ast);
-                        me.render();
+                        if (abstractBreaker) {
+                            while (abstractBreaker.next) { abstractBreaker.next.unlink() }
+                            abstractBreaker.firstChild.literal = '[[Napa]]ReadMore';
+                        }
                     }
-                    else {
-                        me.node.innerHTML = 'NAPA: Cannot render post "' + key + '", format is not valid.';
-                        me.node.className += ' error';
-                    }
+                    me.html = writer.render(ast);
+                    me.render();
                 }
                 else {
                     me.node.innerHTML = 'NAPA: Request to post "' + key + '" failed.';
@@ -146,6 +142,12 @@
             this.node.appendChild(postTitle);
             this.node.appendChild(postMeta);
             this.node.appendChild(postContent);
+            let napaRenderTags = document.evaluate(".//p[starts-with(text(), '[[Napa]]')]", this.node, null, XPathResult.ANY_TYPE, null);
+            let tag = napaRenderTags.iterateNext();
+            while (tag) {
+                tag.innerHTML = '<a href="#">Continue reading ...</a>';
+                tag = napaRenderTags.iterateNext();
+            }
         }
 
 
