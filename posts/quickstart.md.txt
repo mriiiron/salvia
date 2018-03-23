@@ -1,0 +1,45 @@
+Napa needs the help of [CommonMark](http://commonmark.org). Suppose you have downloaded both CommonMark and Napa in your `js` folder.
+
+Simply add following lines in your page:
+
+```
+<script src="./js/commonmark.min.js"></script>
+<script src="./js/napa.js"></script>
+```
+
+Congrats! You have geared up to create a blog with Napa! Continue read this post to learn how to create different blog components.
+
+{{ Napa.EndOfAbstract }}
+
+Jump to section:
+
+1. Feed Page (Main)
+2. Post Reader Page
+3. Archive Page
+4. Custom Page
+
+## Feed
+
+Feed page is usually your home page. People would see a list of your posts. Usually you don't want to show full post contents to your visitor in this page.
+
+Construct HTML markups:
+
+```
+<header id="header"></header>
+<main id="feed"></main>
+<footer id="footer"></footer>
+```
+
+Then script up:
+
+```
+let blog = new Napa({
+    el: {
+        header: '#header',
+        feed: '#feed',
+        footer: '#footer'
+    }
+});
+```
+
+Your page is ready!

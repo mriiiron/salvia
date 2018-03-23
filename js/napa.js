@@ -95,13 +95,13 @@
 
     function NAPAHeader(desc) {
         this.el = desc.el;
-        let titleNode = quickCreate('div', 'napa-title', '<a href="' + config.indexPage +'">' + desc.blogMeta.blog.title + '</a>');
+        let titleNode = quickCreate('div', 'napa-title', desc.blogMeta.blog.title);
         let extraHTML = '';
-        for (let i = 0; i < desc.blogMeta.pages.length; i++) {
-            let page = desc.blogMeta.pages[i];
+        for (let i = 0; i < desc.blogMeta.nav.length; i++) {
+            let page = desc.blogMeta.nav[i];
             extraHTML = extraHTML + '<li><a href="' + page.href + '">' + page.text + '</a></li>';
         }
-        let navNode = quickCreate('nav', 'napa-nav', '<ul><li><a href="' + config.indexPage +'">Home</a></li><li><a href="' + config.archivePage +'">Archive</a></li>' + extraHTML + '</ul>');
+        let navNode = quickCreate('nav', 'napa-nav', '<ul>' + extraHTML + '</ul>');
         let headerInnerNode = quickCreate('div', 'napa-header-inner');
         headerInnerNode.appendChild(titleNode);
         headerInnerNode.appendChild(navNode);
@@ -113,7 +113,7 @@
 
     function NAPAFooter(desc) {
         this.el = desc.el;
-        let copyrightNode = quickCreate('div', 'napa-copyright', 'Powered by Napa.js');
+        let copyrightNode = quickCreate('div', 'napa-copyright', 'Powered by napa.js 2017-2018');
         let footerInnerNode = quickCreate('div', 'napa-footer-inner');
         footerInnerNode.appendChild(copyrightNode);
         let footerBaseNode = document.querySelector(this.el);

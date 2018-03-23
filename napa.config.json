@@ -1,13 +1,13 @@
 {
     "blog": {
-        "title": "napa.js"
+        "title": "Napa.js"
     },
-    "pages": [
-        { "text": "About", "href": "./about.html" }
+    "nav": [
+        { "text": "Home", "href": "./index.html" },
+        { "text": "Docs", "href": "./docs.html" },
+        { "text": "GitHub", "href": "https://github.com/mriiiron/napa" }
     ],
     "posts": [
-        "20180309||mriiiron||s1||Sample 1",
-        "20180310||mriiiron||s2",
-        "20180311||mriiiron||tt||Trouble"
+        "2018-03-23||mriiiron||quickstart||Quick Start"
     ]
 }

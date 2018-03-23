@@ -4,8 +4,8 @@
 }
 
 /* Color Palette:
-    Napa Green: #d2f383 #b6de54 #9cc830 #7ca517 #5c8102
-    Main: #666
+    Napa Green: #e9f2d2 #c4d39e #9eb16f #7f934c #61772c
+    Main Text: #666 #eee
 */
 
 html, body {
@@ -13,16 +13,34 @@ html, body {
 }
 
 body {
-    font-family: "Lato", "Open Sans", "Microsoft YaHei", Arial, sans-serif;
+    font-family: "Open Sans", "Microsoft YaHei", Arial, sans-serif;
     margin: 0;
     display: flex;
     flex-direction: column;
     color: #666;
 }
 
+a {
+    text-decoration: none;
+    color: #9eb16f;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 .napa-header {
-    background-color: #ccd8af;
-    flex: 0 0 90px;
+    background-color: #61772c;
+    color: #e9f2d2;
+    flex: 0 0 60px;
+}
+
+.napa-header a {
+    color: #e9f2d2;
+}
+
+.napa-header a:hover {
+    text-decoration: underline;
 }
 
 .napa-header-inner {
@@ -35,7 +53,6 @@ body {
 }
 
 .napa-footer {
-    background-color: #d2f383;
     flex: 0 0 auto;
 }
 
@@ -44,10 +61,13 @@ body {
     height: 100%;
     margin: 0 auto;
     padding: 10px 0;
+    text-align: center;
+    color: #61772c;
 }
 
 .napa-title {
-    font-size: 2em;
+    font-size: 1.5em;
+    letter-spacing: 2px;
 }
 
 .napa-container {
@@ -55,19 +75,18 @@ body {
     margin: 50px auto 0 auto;
     flex: 1 0 auto;
 }
-
-.napa-container a {
-
-}
-
 .napa-post {
     margin-bottom: 50px;
     padding-bottom: 25px;
-    border-bottom: 1px solid #d2f383;
+    border-bottom: 1px solid #e9f2d2;
 }
 
 .napa-post.error {
     color: red;
+}
+
+.napa-post-title {
+    letter-spacing: 1px;
 }
 
 .napa-nav ul {
