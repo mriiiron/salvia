@@ -3,6 +3,10 @@
     src: url("OpenSans-Regular.ttf");
 }
 
+/* Color Palette:
+    Napa Green: #d2f383 #b6de54 #9cc830 #7ca517 #5c8102
+    Main: #666
+*/
 
 html, body {
     height: 100%;
@@ -13,10 +17,11 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
+    color: #666;
 }
 
 .napa-header {
-    background-color: #eee;
+    background-color: #ccd8af;
     flex: 0 0 90px;
 }
 
@@ -30,7 +35,7 @@ body {
 }
 
 .napa-footer {
-    background-color: #eee;
+    background-color: #d2f383;
     flex: 0 0 auto;
 }
 
@@ -58,7 +63,7 @@ body {
 .napa-post {
     margin-bottom: 50px;
     padding-bottom: 25px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #d2f383;
 }
 
 .napa-post.error {
