@@ -1,6 +1,7 @@
 {
     "blog": {
-        "title": "Napa.js"
+        "title": "Napa.js",
+        "theme": "napa-green"
     },
     "nav": [
         { "text": "Home", "href": "./index.html" },
@@ -8,6 +9,7 @@
         { "text": "GitHub", "href": "https://github.com/mriiiron/napa" }
     ],
     "posts": [
-        "2018-03-23||mriiiron||quickstart||Quick Start"
+        "2018-03-23||mriiiron||quickstart||Quick Start",
+        "2018-03-23||mriiiron||doc||Documentation"
     ]
 }

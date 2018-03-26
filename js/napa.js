@@ -4,9 +4,8 @@
     const config = {
         configFile: './napa.config.json',
         postsPath: './posts/',
-        indexPage: './index.html',
+        themesPath: './themes/',
         postReaderPage: './post.html',
-        archivePage: './archive.html'
     };
 
     function ajaxGet(url, returnType, callback) {
@@ -44,6 +43,15 @@
         ajaxGet(config.configFile, 'json', function (status, response) {
             if (status == 200) {
                 me.meta = response;
+
+                // Load theme
+                let link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.type = "text/css";
+                link.href = config.themesPath + me.meta.blog.theme + '/style.css';
+                document.getElementsByTagName("head")[0].appendChild(link);
+
+                // Construct blog components
                 if (desc.el.header) {
                     me.header = new NAPAHeader({
                         el: desc.el.header,
@@ -85,6 +93,7 @@
                         el: desc.el.archive
                     });
                 }
+
             }
             else {
                 console.error('NAPA: Failed loading configuration file.');

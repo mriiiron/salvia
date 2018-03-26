@@ -1,6 +1,6 @@
 @font-face {
-    font-family: "Open Sans";
-    src: url("OpenSans-Regular.ttf");
+    font-family: "Lato";
+    src: url("Lato-Regular.ttf");
 }
 
 /* Color Palette:
@@ -13,7 +13,7 @@ html, body {
 }
 
 body {
-    font-family: "Open Sans", "Microsoft YaHei", Arial, sans-serif;
+    font-family: "Lato", "Microsoft YaHei", Arial, sans-serif;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -65,6 +65,17 @@ a:hover {
     color: #61772c;
 }
 
+.napa-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.napa-nav ul li {
+    display: inline-block;
+    padding: 0 10px;
+}
+
 .napa-title {
     font-size: 1.5em;
     letter-spacing: 2px;
@@ -89,13 +100,12 @@ a:hover {
     letter-spacing: 1px;
 }
 
-.napa-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.napa-post h2, .napa-post h3, .napa-post h4, .napa-post h5, .napa-post h6 {
+    font-weight: normal;
 }
 
-.napa-nav ul li {
-    display: inline-block;
-    padding: 0 10px;
+.napa-post pre {
+    background-color: #333;
+    color: #eee;
+    padding: 10px 20px;
 }
