@@ -4,17 +4,17 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <title>Post | Napa.js</title>
+    <link href="./css/prism.css" rel="stylesheet" />
 </head>
 
 <body>
 
     <header id="header"></header>
-    <main class="napa-container">
-        <article id="post"></article>
-    </main>
+    <main id="post"></main>
     <footer id="footer"></footer>
 
     <script src="./js/commonmark.min.js"></script>
+    <script src="./js/prism.js" data-manual></script>
     <script src="./js/napa.js"></script>
     <script>
         let blog = new Napa({
@@ -23,7 +23,12 @@
                 post: '#post',
                 footer: '#footer'
             },
-            postKey: window.location.hash.substr(1)
+            options: {
+                postKey: window.location.hash.substr(1)
+            },
+            ready: function () {
+                console.log('ready!');
+            }
         });
     </script>
 

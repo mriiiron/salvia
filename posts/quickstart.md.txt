@@ -2,7 +2,7 @@ Napa needs the help of [CommonMark](http://commonmark.org). Suppose you have dow
 
 Simply add following lines in your page:
 
-```
+```markup
 <script src="./js/commonmark.min.js"></script>
 <script src="./js/napa.js"></script>
 ```
@@ -24,7 +24,7 @@ Feed page is usually your home page. People would see a list of your posts. Usua
 
 Construct HTML markups:
 
-```
+```markup
 <header id="header"></header>
 <main id="feed"></main>
 <footer id="footer"></footer>
@@ -32,7 +32,7 @@ Construct HTML markups:
 
 Then script up:
 
-```
+```javascript
 let blog = new Napa({
     el: {
         header: '#header',

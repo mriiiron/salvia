@@ -1,4 +1,4 @@
-(function (window, commonmark) {
+(function (window, commonmark, Prism) {
     'use strict'
 
     const config = {
@@ -38,8 +38,11 @@
     }
 
 
-    function Napa(desc) {
+    function NAPA(desc) {
         let me = this;
+        me.ready = desc.ready;
+        me.ajaxCount = 0;
+        me.ajaxMaxCount = 0;
         ajaxGet(config.configFile, 'json', function (status, response) {
             if (status == 200) {
                 me.meta = response;
@@ -64,22 +67,31 @@
                     });
                 }
                 if (desc.el.feed) {
+                    me.ajaxMaxCount = me.meta.posts.length;
                     me.feed = new NAPAFeed({
+                        napaCore: me,
                         el: desc.el.feed,
                         blogMeta: me.meta
                     });
+
                 }
                 if (desc.el.post) {
+                    me.ajaxMaxCount = 1;
                     let isLoaded = false;
                     for (let i = 0; i < me.meta.posts.length; i++) {
                         let postMeta = me.meta.posts[i];
                         let postKey = postMeta.split('||')[2];
-                        if (desc.postKey == postKey) {
+                        if (desc.options.postKey == postKey) {
+                            let article = quickCreate('article');
                             me.post = new NAPAPost({
-                                el: desc.el.post,
-                                postMeta: postMeta
+                                napaCore: me,
+                                node: article,
+                                postMeta: postMeta,
+                                options: { abstractOnly: false }
                             });
-                            me.post.request({ abstractOnly: false });
+                            let singlePostContainer = document.querySelector(desc.el.post);
+                            singlePostContainer.className = 'napa-container';
+                            singlePostContainer.appendChild(article);
                             isLoaded = true;
                             break;
                         }
@@ -101,10 +113,19 @@
         });
     }
 
+    NAPA.prototype.ajaxDone = function () {
+        this.ajaxCount++;
+        console.log(this.ajaxCount + '/' + this.ajaxMaxCount);
+        if (this.ajaxCount == this.ajaxMaxCount && typeof(this.ready) == 'function') {
+            Prism.highlightAll();
+            this.ready();
+        }
+    }
+
 
     function NAPAHeader(desc) {
         this.el = desc.el;
-        let titleNode = quickCreate('div', 'napa-title', desc.blogMeta.blog.title);
+        let titleNode = quickCreate('div', 'napa-title', '<a href="./index.html">' + desc.blogMeta.blog.title + '</a>');
         let extraHTML = '';
         for (let i = 0; i < desc.blogMeta.nav.length; i++) {
             let page = desc.blogMeta.nav[i];
@@ -132,36 +153,33 @@
 
 
     function NAPAFeed(desc) {
+        this.napaCore = desc.napaCore;
         this.el = desc.el;
         let feedBaseNode = document.querySelector(this.el);
         feedBaseNode.className = 'napa-container';
         for (let i = 0; i < desc.blogMeta.posts.length; i++) {
-            let postBaseNode = quickCreate('article', 'napa-post');
+            let article = quickCreate('article', 'napa-post');
             let post = new NAPAPost({
-                node: postBaseNode,
-                postMeta: desc.blogMeta.posts[i]
+                napaCore: this.napaCore,
+                node: article,
+                postMeta: desc.blogMeta.posts[i],
+                options: { abstractOnly: true }
             });
             feedBaseNode.appendChild(post.node);
-            post.request({ abstractOnly: true });
         }
     }
 
 
     function NAPAPost(desc) {
-        if (desc.el) {
-            this.el = desc.el;
-            this.node = document.querySelector(desc.el);
-        }
-        else {
-            this.el = null;
-            this.node = desc.node;
-        }
+        this.napaCore = desc.napaCore;
+        this.node = desc.node;
         let meta = desc.postMeta.split('||');
         this.date = meta[0];
         this.author = meta[1];
         this.key = meta[2];
         this.title = (meta[3] ? meta[3] : this.key);
         this.html = null;
+        this.request(desc.options)
     }
 
     NAPAPost.prototype.request = function (options) {
@@ -196,6 +214,7 @@
                 }
                 me.html = writer.render(ast);
                 me.render();
+                me.napaCore.ajaxDone();
             }
             else {
                 me.node.innerHTML = 'NAPA: Request to post "' + key + '" failed.';
@@ -253,7 +272,7 @@
 
 
     if (typeof (window.napa) === 'undefined') {
-        window.Napa = Napa;
+        window.Napa = NAPA;
     }
 
-})(window, commonmark);
+})(window, commonmark, Prism);

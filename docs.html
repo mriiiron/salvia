@@ -4,6 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <title>Documentation | Napa.js</title>
+    <link href="./css/prism.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -13,6 +14,7 @@
     <footer id="footer"></footer>
 
     <script src="./js/commonmark.min.js"></script>
+    <script src="./js/prism.js" data-manual></script>
     <script src="./js/napa.js"></script>
     <script>
         let blog = new Napa({
@@ -20,6 +22,9 @@
                 header: '#header',
                 feed: '#feed',
                 footer: '#footer'
+            },
+            ready: function () {
+                console.log('ready!');
             }
         });
     </script>

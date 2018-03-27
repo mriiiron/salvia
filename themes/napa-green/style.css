@@ -108,4 +108,5 @@ a:hover {
     background-color: #333;
     color: #eee;
     padding: 10px 20px;
+    overflow-x: auto;
 }
