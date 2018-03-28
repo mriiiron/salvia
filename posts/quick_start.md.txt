@@ -1,0 +1,56 @@
+## Using Napa
+
+Napa depends on [CommonMark](http://commonmark.org) as Markdown parser and [Prism](http://prismjs.com) as code highlighter. First, be sure to link `prism.css` in your page to make Prism work correctly:
+
+```markup
+<link href="./css/prism.css" rel="stylesheet" />
+```
+
+Then link Napa script to the page:
+
+```markup
+<script src="./js/napa.min.js"></script>
+```
+
+Or, for development purpose, you may import scripts separately (be sure to follow the order):
+
+```markup
+<script src="./src/commonmark.min.js"></script>
+<script src="./src/prism.js"></script>
+<script src="./src/napa.js"></script>
+```
+
+Congrats! You have geared up to be ready to create a blog with Napa! Continue read this post to learn how to create different blog components.
+
+## Create Your Main Page
+
+Feed page is usually your home page. People would see a list of your posts. Usually you don't want to show full post contents to your visitor in this page.
+
+Construct HTML markups:
+
+```markup
+<header id="header"></header>
+<main id="feed"></main>
+<footer id="footer"></footer>
+```
+
+Then script up:
+
+```javascript
+let blog = new Napa({
+    el: {
+        header: '#header',
+        feed: '#feed',
+        footer: '#footer'
+    }
+});
+```
+
+Your page is ready, and you may now start blogging! Follow these topics to learn more:
+
+* [Create a post reader page](./post.html?postKey=create_post_reader)
+* [Create an archive page](./post.html?postKey=create_archive)
+* [Create a custom page](./post.html?postKey=create_custom)
+* [Using themes](./post.html?postKey=use_theme)
+
+Enjoy!

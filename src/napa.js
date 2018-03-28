@@ -44,7 +44,7 @@
         me.ajaxCount = 0;
         me.ajaxMaxCount = 0;
         ajaxGet(config.configFile, 'json', function (status, response) {
-            if (status == 200) {
+            if (status == 200 && response) {
                 me.meta = response;
 
                 // Load theme
@@ -121,6 +121,13 @@
             this.ready();
         }
     }
+
+
+    NAPA.util = {
+        getUrlParamValue: function (param) {
+            return (window.location.search.split(param + '=')[1] || '').split('&')[0];
+        }
+    };
 
 
     function NAPAHeader(desc) {
@@ -225,7 +232,7 @@
 
     NAPAPost.prototype.render = function () {
         let article = this.node;
-        let postTitle = quickCreate('h1', 'napa-post-title', '<a href="' + config.postReaderPage + '#' + this.key + '">' + this.title + '</a>');
+        let postTitle = quickCreate('h1', 'napa-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.key + '">' + this.title + '</a>');
         let postMeta = quickCreate('p', 'napa-post-meta', '<i><span class="napa-post-date">' + this.date + '</span> by <span class="napa-post-author">' + this.author + '</span></i>');
         let postContent = quickCreate('div', 'napa-post-content', this.html);
         article.className = 'napa-post';
@@ -237,7 +244,7 @@
         for (let i = 0; i < pTags.length; i++) {
             switch (pTags[i].innerText) {
                 case '[[Napa]]ReadMore':
-                    pTags[i].innerHTML = '<a href="' + config.postReaderPage + '#' + this.key + '">Continue reading ...</a>';
+                    pTags[i].innerHTML = '<a href="' + config.postReaderPage + '?postKey=' + this.key + '">Continue reading ...</a>';
                     break;
                 default:
                     break;

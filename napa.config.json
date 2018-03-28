@@ -9,7 +9,10 @@
         { "text": "GitHub", "href": "https://github.com/mriiiron/napa" }
     ],
     "posts": [
-        "2018-03-23||mriiiron||quickstart||Quick Start",
-        "2018-03-23||mriiiron||doc||Documentation"
+        "2018-03-23||mriiiron||quick_start||Your First Post with Napa",
+        "2018-03-23||mriiiron||create_post_reader||Creating Post Reader Page",
+        "2018-03-23||mriiiron||create_archive||Creating Archive Page",
+        "2018-03-23||mriiiron||create_custom||Creating Custom Page",
+        "2018-03-23||mriiiron||use_theme||Using Themes"
     ]
 }
