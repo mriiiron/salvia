@@ -1,5 +1,5 @@
 Hello Napa!
 
-{{ Napa.EndOfAbstract }}
+{{ AbstractBreaker }}
 
 ![A Sample Image](https://i.imgur.com/FwTyhOJ.png)

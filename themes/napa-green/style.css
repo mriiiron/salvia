@@ -35,6 +35,19 @@ a:hover {
     flex: 0 0 60px;
 }
 
+.napa-header .napa-title {
+    display: flex;
+}
+
+.napa-header .napa-title .napa-logo {
+    height: 50px;
+    width: 50px;
+    background-image: url(./temp-logo.png);
+}
+
+.napa-header .napa-title .napa-title-text {
+}
+
 .napa-header a {
     color: #e9f2d2;
 }
@@ -54,6 +67,7 @@ a:hover {
 
 .napa-footer {
     flex: 0 0 auto;
+    border-top: 1px solid #e9f2d2;
 }
 
 .napa-footer-inner {
@@ -86,22 +100,27 @@ a:hover {
     margin: 50px auto 0 auto;
     flex: 1 0 auto;
 }
+
 .napa-post {
     margin-bottom: 50px;
     padding-bottom: 25px;
     border-bottom: 1px solid #e9f2d2;
 }
 
-.napa-post.error {
-    color: red;
+.napa-post:last-child {
+    border-bottom: none;
 }
 
 .napa-post-title {
     letter-spacing: 1px;
 }
 
-.napa-post h2, .napa-post h3, .napa-post h4, .napa-post h5, .napa-post h6 {
+.napa-post h1, .napa-post h2, .napa-post h3, .napa-post h4, .napa-post h5, .napa-post h6 {
     font-weight: normal;
+}
+
+.napa-post h1 {
+    font-size: 1.75em;
 }
 
 .napa-post h2 {
@@ -133,6 +152,19 @@ a:hover {
     padding: 2px 4px;
 }
 
+.napa-post blockquote {
+    border-left: 3px solid #c4d39e;
+    margin: 25px 10px;
+    padding: 7px 10px;
+    color: #61772c
+}
+
+.napa-post blockquote p {
+    margin: 0;
+}
+
 .napa-post h4 + blockquote {
+    border-left: none;
     margin: 0 40px;
+    color: #333;
 }

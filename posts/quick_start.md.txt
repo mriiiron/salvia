@@ -2,14 +2,14 @@ After reading this guide, you should be able to create a minimalist blog site fe
 
 Steps:
 
-0. [Directory Structure of Napa](#)
-1. [Preparing sample post](#)
-2. [Configuring Napa](#)
-3. [Linking Napa](#)
-4. [Creating home page](#)
-5. [Creating post reader page](#)
+0. [Directory Structure](#dir-structure)
+1. [Preparing Sample Post](#prepare-sample)
+2. [Configuring Napa](#config)
+3. [Linking Napa](#link)
+4. [Creating Home Page](#create-home)
+5. [Creating Post Reader Page](#create-post-reader)
 
-## Directory Structure
+## Directory Structure {{ NodeID: dir-structure }}
 
 A basic Napa project follows the structure below:
 
@@ -30,27 +30,27 @@ root
 
 #### `themes`
 
-> The folder storing [themes](#). A theme is a collection of CSS stylesheets and other supporting files (e.g. fonts).</dd>
+> The folder storing [themes](./post.html?postKey=use_theme). A theme is a collection of CSS stylesheets and other supporting files (e.g. fonts).</dd>
 
 #### `napa.config.json`
 
-> Stores [configuration](#) data.
+> Stores [configuration](#config) data.
 
-## Preparing Sample Post
+## Preparing Sample Post {{ NodeID: prepare-sample }}
 
 Create a text file `hello_napa.md.txt` inside `post` folder with following contents:
 
 ```
 Hello Napa!
 
-{{ Napa.EndOfAbstract }}
+{{ AbstractBreaker }}
 
 ![A Sample Image](https://i.imgur.com/FwTyhOJ.png)
 ```
 
-The "mustache tag", `{{ Napa.EndOfAbstract }}`, indicates there's an abstract breaker. Contents before this tag would be treated as abstract of this post. When rendering a post you have the choice to render the whole post or render the abstract only. For more information, see [Napa API](#).
+The "mustache tag", `{{ AbstractBreaker }}`, indicates there's an abstract breaker. Contents before this tag would be treated as abstract of this post. When rendering a post you have the choice to render the whole post or render the abstract only. For more information, see [Napa API](./post.html?postKey=api_doc).
 
-## Configuration
+## Configuration {{ NodeID: config }}
 
 Then we need to set up configuration. Create `napa.config.json` file in the root folder:
 
@@ -87,7 +87,7 @@ Then we need to set up configuration. Create `napa.config.json` file in the root
 
 Here we successfully configured a Napa blog with only one sample post. Now we're ready to start writing pages.
 
-## Linking Napa
+## Linking Napa {{ NodeID: link }}
 
 Napa depends on [CommonMark](http://commonmark.org) as Markdown parser and [Prism](http://prismjs.com) as code highlighter. First, be sure to link `prism.css` in your page to make Prism work correctly:
 
@@ -109,9 +109,9 @@ Or, for development use, you may import scripts separately (be sure to follow th
 <script src="./src/napa.js"></script>
 ```
 
-## Create Page: Home
+## Create Page: Home {{ NodeID: create-home }}
 
-Once setup is done, creating pages gotta be easy. Napa provides a bunch of [building blocks](#). All you need to do is to choose what you need and compose each page.
+Once setup is done, creating pages gotta be easy. Napa provides a bunch of building blocks. All you need to do is to choose what you need and compose each page.
 
 A home page for a blog is usually a "feed" page. People would see a list of your abstracted posts. Create a `index.html` and put following things:
 
@@ -137,9 +137,9 @@ let blog = new Napa({
 
 And here we go!
 
-In the object we passed to Napa constructor, the `el` property defines the [components](#) you choose to build this page. In this example, we simply feed Napa with `feed` component to the `<main>` tag, then add a `header` to `<header>` tag and a `footer` to `<footer>` tag.
+In the object we passed to Napa constructor, the `el` property defines the [components](./post.html?postKey=api_doc) you choose to build this page. In this example, we simply feed Napa with `feed` component to the `<main>` tag, then add a `header` to `<header>` tag and a `footer` to `<footer>` tag.
 
-## Create Page: Post Reader
+## Create Page: Post Reader {{ NodeID: create-post-reader }}
 
 A post reader is a page that displays a single post. Craete a `post.html` and add:
 
@@ -166,16 +166,12 @@ let blog = new Napa({
 });
 ```
 
-Note there's a bit difference because here we need 'options' here. for the post reader page, we need to pass the key to Napa so that we can grab the right post we want. In this example, we'll pass the  
-post key through URL parameters. For example, visiting `post.html?postKey=hello_napa` will load our sample post with the key `hello_napa`. Napa provides a utility function `Napa.util.getUrlParamValue()` to do URL parameter parsing jobs for you. [See API](#) for more information.
+Note there's a bit difference because here we need 'options' here. for the post reader page, we need to pass the key to Napa so that we can grab the right post we want. In this example, we'll pass the
+post key through URL parameters. For example, visiting `post.html?postKey=hello_napa` will load our sample post with the key `hello_napa`. Napa provides a function `getUrlParamValue()` to do URL parameter parsing jobs for you. [See API](./post.html?postKey=api_doc) for more information.
 
 > Note:
 > You must use `post.html` for the name of post reader page for now. It is NOT CONFIGURABLE during current version.
 
-Now you could open you favorite browser and check your freshly cooked Napa blog. Congrats and enjoy!
+Now you could open you favorite browser and check your freshly cooked Napa blog.
 
-## Next Step
-
-* [API Documentation](#)
-* [Creating Custom Pages](./post.html?postKey=create_custom)
-* [Using Themes](./post.html?postKey=use_theme)
+Congrats and enjoy!

@@ -33,10 +33,20 @@
         return element;
     }
 
-    function extractMustache(input) {
-        return input.replace(/^{+|}+$/g, '').trim();
+    function extractNapaTag(input) {
+        let mustache = input.match(/{{.*}}/g);
+        if (mustache) {
+            let pair = mustache[0].replace(/^{{|}}$/g, '').split(':');
+            return { key: pair[0].trim(), value: (pair[1] ? pair[1].trim() : null) };
+        }
+        else {
+            return null;
+        }
     }
 
+    function removeNapaTag(input) {
+        return input.replace(/{{.*}}/g, '').trim();
+    }
 
     function NAPA(desc) {
         let me = this;
@@ -150,7 +160,7 @@
 
     function NAPAFooter(desc) {
         this.el = desc.el;
-        let copyrightNode = quickCreate('div', 'napa-copyright', 'Powered by napa.js 2017-2018');
+        let copyrightNode = quickCreate('div', 'napa-copyright', 'Powered by <a href="http://caiyi.us/napa">Napa.js</a> under The MIT License (MIT). Copyright (c) 2017-2018 crafted by <a href="http://caiyi.us">mriiiron</a>');
         let footerInnerNode = quickCreate('div', 'napa-footer-inner');
         footerInnerNode.appendChild(copyrightNode);
         let footerBaseNode = document.querySelector(this.el);
@@ -201,19 +211,32 @@
                 let event;
                 while ((event = walker.next())) {
                     let node = event.node;
-                    if (event.entering && node.type == 'text' && node.literal.startsWith('{{') && node.literal.endsWith('}}')) {
-                        let napaTags = extractMustache(node.literal);
-                        switch (napaTags) {
-                            case 'Napa.EndOfAbstract':
-                                abstractBreaker = node.parent;
-                                break;
+                    if (event.entering && node.type == 'text') {
+                        let napaTag = extractNapaTag(node.literal);
+                        if (napaTag) {
+                            switch (napaTag.key) {
+                                case 'AbstractBreaker':
+                                    if (node.parent.type == 'paragraph') {
+                                        node.literal = '[[LinkMeToPost]]';
+                                        abstractBreaker = node.parent;
+                                    }
+                                    break;
+                                case 'NodeID':
+                                    if (node.parent.type == 'heading') {
+                                        node.literal = removeNapaTag(node.literal) + '[[MyIdIs:' + napaTag.value + ']]';
+                                        //node.literal = removeNapaTag(node.literal) + (options.abstractOnly ? '' : '[[MyIdIs:' + napaTag.value + ']]');
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
+
                     }
                 }
                 if (abstractBreaker) {
                     if (options.abstractOnly) {
                         while (abstractBreaker.next) { abstractBreaker.next.unlink() }
-                        abstractBreaker.firstChild.literal = '[[Napa]]ReadMore';
                     }
                     else {
                         abstractBreaker.unlink();
@@ -242,12 +265,20 @@
         article.appendChild(postContent);
         let pTags = article.querySelectorAll('p');
         for (let i = 0; i < pTags.length; i++) {
-            switch (pTags[i].innerText) {
-                case '[[Napa]]ReadMore':
-                    pTags[i].innerHTML = '<a href="' + config.postReaderPage + '?postKey=' + this.key + '">Continue reading ...</a>';
-                    break;
-                default:
-                    break;
+            if (pTags[i].innerText == '[[LinkMeToPost]]') {
+                pTags[i].innerHTML = '<a href="' + config.postReaderPage + '?postKey=' + this.key + '">Continue reading ...</a>';
+            }
+        }
+        let hTags = article.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        for (let i = 0; i < hTags.length; i++) {
+            let hTag = hTags[i];
+            let match = hTag.innerText.match(/\[\[.*\]\]/g);
+            if (match) {
+                let pair = match[0].replace(/^\[\[|\]\]$/g, '').split(':');
+                if (pair[0] == 'MyIdIs') {
+                    hTag.id = pair[1];
+                }
+                hTag.innerText = hTag.innerText.replace(match[0], '');
             }
         }
     };
