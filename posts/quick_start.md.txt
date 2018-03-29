@@ -1,4 +1,93 @@
-## Using Napa
+After reading this guide, you should be able to create a minimalist blog site featuring a home page that shows list of your post abstracts, as well as a reader page that displays an individual post.
+
+Steps:
+
+0. [Directory Structure of Napa](#)
+1. [Preparing sample post](#)
+2. [Configuring Napa](#)
+3. [Linking Napa](#)
+4. [Creating home page](#)
+5. [Creating post reader page](#)
+
+## Directory Structure
+
+A basic Napa project follows the structure below:
+
+```
+root
+├── posts
+|   ├── your_post.md.txt
+|   └── your_another_post.md.txt
+├── themes
+|   ├── theme_folder
+|   └── another_theme_folder
+└── napa.config.json
+```
+
+#### `posts`
+
+> The folder to store your posts. Using <code>.txt</code> extension instead of <code>.md</code> to ensure that the file being correctly intepreted by browser.
+
+#### `themes`
+
+> The folder storing [themes](#). A theme is a collection of CSS stylesheets and other supporting files (e.g. fonts).</dd>
+
+#### `napa.config.json`
+
+> Stores [configuration](#) data.
+
+## Preparing Sample Post
+
+Create a text file `sample.md.txt` inside `post` folder with following contents:
+
+```
+Hello Napa!
+
+{{ Napa.EndOfAbstract }}
+
+![A Sample Image](https://i.imgur.com/FwTyhOJ.png)
+```
+
+The "mustache tag", `{{ Napa.EndOfAbstract }}`, indicates there's an abstract breaker. Contents before this tag would be treated as abstract of this post. When rendering a post you have the choice to render the whole post or render the abstract only. For more information, see [Napa API](#).
+
+## Configuration
+
+Then we need to set up configuration. Create `napa.config.json` file in the root folder:
+
+```json
+{
+    "blog": {
+        "title": "Your First Napa Blog!",
+        "theme": "napa-green"
+    },
+    "nav": [
+        { "text": "Home", "href": "./index.html" }
+    ],
+    "posts": [
+        "2018-03-29||your_name||sample||Hello Napa!"
+    ]
+}
+```
+
+#### `blog.title`
+
+> This your blog title displaying in the header.
+
+#### `blog.theme`
+
+> The name of theme folder under your `themes` folder. Here `napa-green` is Napa's default theme.
+
+#### `nav`
+
+> This array of objects defines the items of the navigation bar.
+
+#### `posts`
+
+> This array of strings defines your post list. Each string has four parts, date, author, key and title, splitted by `||`. Title is optional. If you don't provide the title, the key would be used as the title.
+
+Here we successfully configured a Napa blog with only one sample post. Now we're ready to start writing pages.
+
+## Linking Napa
 
 Napa depends on [CommonMark](http://commonmark.org) as Markdown parser and [Prism](http://prismjs.com) as code highlighter. First, be sure to link `prism.css` in your page to make Prism work correctly:
 
@@ -12,7 +101,7 @@ Then link Napa script to the page:
 <script src="./js/napa.min.js"></script>
 ```
 
-Or, for development purpose, you may import scripts separately (be sure to follow the order):
+Or, for development use, you may import scripts separately (be sure to follow the order):
 
 ```markup
 <script src="./src/commonmark.min.js"></script>
@@ -20,13 +109,11 @@ Or, for development purpose, you may import scripts separately (be sure to follo
 <script src="./src/napa.js"></script>
 ```
 
-Congrats! You have geared up to be ready to create a blog with Napa! Continue read this post to learn how to create different blog components.
+## Create Page: Home
 
-## Create Your Main Page
+Once setup is done, creating pages gotta be easy. Napa provides a bunch of [building blocks](#). All you need to do is to choose what you need and compose each page.
 
-Feed page is usually your home page. People would see a list of your posts. Usually you don't want to show full post contents to your visitor in this page.
-
-Construct HTML markups:
+A home page for a blog is usually a "feed" page. People would see a list of your abstracted posts. Construct HTML markups:
 
 ```markup
 <header id="header"></header>
@@ -46,7 +133,9 @@ let blog = new Napa({
 });
 ```
 
-Your page is ready, and you may now start blogging! Follow these topics to learn more:
+## Create Page: Post Reader
+
+Your blog is ready! Follow these topics to learn more:
 
 * [Create a post reader page](./post.html?postKey=create_post_reader)
 * [Create an archive page](./post.html?postKey=create_archive)

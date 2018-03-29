@@ -104,9 +104,35 @@ a:hover {
     font-weight: normal;
 }
 
+.napa-post h2 {
+    margin-top: 40px;
+}
+
+.napa-post h3 {
+    margin-top: 30px;
+}
+
+.napa-post h4, .napa-post h5, .napa-post h6 {
+    margin: 10px 0 5px 0;
+}
+
 .napa-post pre {
     background-color: #333;
     color: #eee;
     padding: 10px 20px;
     overflow-x: auto;
+}
+
+.napa-post pre code {
+    background-color: #333;
+    padding: 0;
+}
+
+.napa-post code {
+    background-color: #eee;
+    padding: 2px 4px;
+}
+
+.napa-post h4 + blockquote {
+    margin: 0 40px;
 }
