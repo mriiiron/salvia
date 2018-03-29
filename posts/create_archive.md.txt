@@ -1,5 +1,0 @@
-Coming soon!
-
-{{ Napa.EndOfAbstract }}
-
-This is just an example use of abstract breaker!
