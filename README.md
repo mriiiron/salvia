@@ -5,7 +5,7 @@ A fast and easy blog framework featuring minimum building. Only some optional co
 ## Features
 
 - [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG), and forget about the time you wasted while generating massive number of posts.
-- Parser based on [CommonMark](https://github.com/commonmark/commonmark.js), enhanced with [more useful features](http://caiyi.us/napa/post.html?postKey=api_doc).
+- Parser based on [CommonMark](https://github.com/commonmark/commonmark.js), enhanced with [more useful features](http://caiyi.us/salvia/post.html?postKey=api_doc).
 
 ## Installation
 
@@ -17,7 +17,7 @@ Just include necessary files:
 
 ```html
 <link href="./css/prism.css" rel="stylesheet" />
-<script src="./js/napa.min.js"></script>
+<script src="./js/salvia.min.js"></script>
 ```
 
 Construct some markup:
@@ -31,7 +31,7 @@ Construct some markup:
 And here we go.
 
 ```javascript
-let blog = new Napa({
+let blog = new Salvia({
     el: {
         header: '#header',
         feed: '#feed',
