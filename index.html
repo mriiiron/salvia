@@ -3,14 +3,14 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <title>Home | Napa.js</title>
+    <title>Home | SalviaJS</title>
     <link href="./css/prism.css" rel="stylesheet" />
     <style>
         main {
-            color: #61772c;
+            color: #555;
         }
         main .wrap {
-            margin: 150px auto auto auto;
+            margin: auto;
             text-align: center;
         }
         main h1 {
@@ -21,14 +21,13 @@
         }
         main a.button {
             padding: 10px 20px;
-            background-color: #7f934c;
-            color: #e9f2d2;
+            background-color: #9178ad;
+            color: #f6f4f9;
             transition: background-color .25s, color .25s;
         }
         main a.button:hover {
             text-decoration: none;
-            background-color: #e9f2d2;
-            color: #61772c;
+            background-color: #97ae76;
         }
     </style>
 </head>
@@ -36,11 +35,11 @@
 <body>
 
     <header id="header"></header>
-    <main class="napa-container">
+    <main class="salvia-container">
         <div class="wrap">
-            <img src="./assets/napa.jpg" />
+            <img src="./assets/sage.jpg" />
             <h1>A markdown-driven, build-free blog framework</h1>
-            <p>Without the need to "generate" websites like other static site builder, Napa helps you to be green and healthy.</p>
+            <p>Without the need to "generate" websites like other static site builder, Salvia helps you to be green and healthy.</p>
             <div><a class="button" href="./docs.html">Get Started</a></div>
         </div>
     </main>
@@ -48,9 +47,9 @@
 
     <script src="./src/commonmark.min.js"></script>
     <script src="./src/prism.js"></script>
-    <script src="./src/napa.js"></script>
+    <script src="./src/salvia.js"></script>
     <script>
-        let blog = new Napa({
+        let blog = new Salvia({
             el: {
                 header: '#header',
                 footer: '#footer'

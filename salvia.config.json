@@ -1,18 +1,18 @@
 {
     "blog": {
-        "title": "Napa.js",
-        "theme": "napa-green"
+        "title": "SalviaJS",
+        "theme": "sage-violet"
     },
     "nav": [
         { "text": "Home", "href": "./index.html" },
         { "text": "Docs", "href": "./docs.html" },
-        { "text": "GitHub", "href": "https://github.com/mriiiron/napa" }
+        { "text": "GitHub", "href": "https://github.com/mriiiron/salvia" }
     ],
     "posts": [
-        "2018-03-23||mriiiron||quick_start||Your First Post with Napa",
+        "2018-03-23||mriiiron||quick_start||Quick Staret Guide",
         "2018-03-23||mriiiron||create_custom||Creating Custom Page",
         "2018-03-23||mriiiron||use_theme||Using Themes",
         "2018-03-10||mriiiron||api_doc||API Documentation",
-        "2018-03-10||mriiiron||hello_napa||Hello Napa!"
+        "2018-03-10||mriiiron||hello||Hello Salvia!"
     ]
 }

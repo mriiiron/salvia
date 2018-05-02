@@ -4,14 +4,14 @@ Steps:
 
 0. [Directory Structure](#dir-structure)
 1. [Preparing Sample Post](#prepare-sample)
-2. [Configuring Napa](#config)
-3. [Linking Napa](#link)
+2. [Configuring Salvia](#config)
+3. [Linking Salvia](#link)
 4. [Creating Home Page](#create-home)
 5. [Creating Post Reader Page](#create-post-reader)
 
 ## Directory Structure {{ NodeID: dir-structure }}
 
-A basic Napa project follows the structure below:
+A basic Salvia project follows the structure below:
 
 ```
 root
@@ -21,7 +21,7 @@ root
 ├── themes
 |   ├── theme_folder
 |   └── another_theme_folder
-└── napa.config.json
+└── salvia.config.json
 ```
 
 #### `posts`
@@ -32,39 +32,39 @@ root
 
 > The folder storing [themes](./post.html?postKey=use_theme). A theme is a collection of CSS stylesheets and other supporting files (e.g. fonts).</dd>
 
-#### `napa.config.json`
+#### `salviaconfig.json`
 
 > Stores [configuration](#config) data.
 
 ## Preparing Sample Post {{ NodeID: prepare-sample }}
 
-Create a text file `hello_napa.md.txt` inside `post` folder with following contents:
+Create a text file hello.md.txt` inside `post` folder with following contents:
 
 ```
-Hello Napa!
+Hello Salvia!
 
 {{ AbstractBreaker }}
 
 ![A Sample Image](https://i.imgur.com/FwTyhOJ.png)
 ```
 
-The "mustache tag", `{{ AbstractBreaker }}`, indicates there's an abstract breaker. Contents before this tag would be treated as abstract of this post. When rendering a post you have the choice to render the whole post or render the abstract only. For more information, see [Napa API](./post.html?postKey=api_doc).
+The "mustache tag", `{{ AbstractBreaker }}`, indicates there's an abstract breaker. Contents before this tag would be treated as abstract of this post. When rendering a post you have the choice to render the whole post or render the abstract only. For more information, see [Salvia API](./post.html?postKey=api_doc).
 
 ## Configuration {{ NodeID: config }}
 
-Then we need to set up configuration. Create `napa.config.json` file in the root folder:
+Then we need to set up configuration. Create `salvia.config.json` file in the root folder:
 
 ```json
 {
     "blog": {
-        "title": "Your First Napa Blog!",
-        "theme": "napa-green"
+        "title": "Your First Salvia Blog!",
+        "theme": "sage-violet"
     },
     "nav": [
         { "text": "Home", "href": "./index.html" }
     ],
     "posts": [
-        "2018-03-29||your_name||hello_napa||Hello Napa!"
+        "2018-03-29||your_name||hello||Hello Salvia!"
     ]
 }
 ```
@@ -75,7 +75,7 @@ Then we need to set up configuration. Create `napa.config.json` file in the root
 
 #### `blog.theme`
 
-> The name of theme folder under your `themes` folder. Here `napa-green` is Napa's default theme.
+> The name of theme folder under your `themes` folder. Here `sage-violet` is Salvia's default theme.
 
 #### `nav`
 
@@ -85,20 +85,20 @@ Then we need to set up configuration. Create `napa.config.json` file in the root
 
 > This array of strings defines your post list. Each string has four parts, date, author, key and title, splitted by `||`. Title is optional. If you don't provide the title, the key would be used as the title.
 
-Here we successfully configured a Napa blog with only one sample post. Now we're ready to start writing pages.
+Here we successfully configured a Salvia blog with only one sample post. Now we're ready to start writing pages.
 
-## Linking Napa {{ NodeID: link }}
+## Linking Salvia {{ NodeID: link }}
 
-Napa depends on [CommonMark](http://commonmark.org) as Markdown parser and [Prism](http://prismjs.com) as code highlighter. First, be sure to link `prism.css` in your page to make Prism work correctly:
+Salvia depends on [CommonMark](http://commonmark.org) as Markdown parser and [Prism](http://prismjs.com) as code highlighter. First, be sure to link `prism.css` in your page to make Prism work correctly:
 
 ```markup
 <link href="./css/prism.css" rel="stylesheet" />
 ```
 
-Then link Napa script to the page:
+Then link Salvia script to the page:
 
 ```markup
-<script src="./js/napa.min.js"></script>
+<script src="./js/salvia.min.js"></script>
 ```
 
 Or, for development use, you may import scripts separately (be sure to follow the order):
@@ -106,12 +106,12 @@ Or, for development use, you may import scripts separately (be sure to follow th
 ```markup
 <script src="./src/commonmark.min.js"></script>
 <script src="./src/prism.js"></script>
-<script src="./src/napa.js"></script>
+<script src="./src/salvia.js"></script>
 ```
 
 ## Create Page: Home {{ NodeID: create-home }}
 
-Once setup is done, creating pages gotta be easy. Napa provides a bunch of building blocks. All you need to do is to choose what you need and compose each page.
+Once setup is done, creating pages gotta be easy. Salvia provides a bunch of building blocks. All you need to do is to choose what you need and compose each page.
 
 A home page for a blog is usually a "feed" page. People would see a list of your abstracted posts. Create a `index.html` and put following things:
 
@@ -126,7 +126,7 @@ HTML:
 JavaScript:
 
 ```javascript
-let blog = new Napa({
+let blog = new Salvia({
     el: {
         header: '#header',
         feed: '#feed',
@@ -137,7 +137,7 @@ let blog = new Napa({
 
 And here we go!
 
-In the object we passed to Napa constructor, the `el` property defines the [components](./post.html?postKey=api_doc) you choose to build this page. In this example, we simply feed Napa with `feed` component to the `<main>` tag, then add a `header` to `<header>` tag and a `footer` to `<footer>` tag.
+In the object we passed to Salvia constructor, the `el` property defines the [components](./post.html?postKey=api_doc) you choose to build this page. In this example, we simply feed Salvia with `feed` component to the `<main>` tag, then add a `header` to `<header>` tag and a `footer` to `<footer>` tag.
 
 ## Create Page: Post Reader {{ NodeID: create-post-reader }}
 
@@ -154,24 +154,24 @@ HTML:
 JavaScript:
 
 ```javascript
-let blog = new Napa({
+let blog = new Salvia({
     el: {
         header: '#header',
         post: '#post',
         footer: '#footer'
     },
     options: {
-        postKey: Napa.util.getUrlParamValue('postKey')
+        postKey: Salvia.util.getUrlParamValue('postKey')
     }
 });
 ```
 
-Note there's a bit difference because here we need 'options' here. for the post reader page, we need to pass the key to Napa so that we can grab the right post we want. In this example, we'll pass the
-post key through URL parameters. For example, visiting `post.html?postKey=hello_napa` will load our sample post with the key `hello_napa`. Napa provides a function `getUrlParamValue()` to do URL parameter parsing jobs for you. [See API](./post.html?postKey=api_doc) for more information.
+Note there's a bit difference because here we need 'options' here. for the post reader page, we need to pass the key to Salvia so that we can grab the right post we want. In this example, we'll pass the
+post key through URL parameters. For example, visiting `post.html?postKey=hello` will load our sample post with the key `hello`. Salvia provides a function `getUrlParamValue()` to do URL parameter parsing jobs for you. [See API](./post.html?postKey=api_doc) for more information.
 
 > Note:
 > You must use `post.html` for the name of post reader page for now. It is NOT CONFIGURABLE during current version.
 
-Now you could open you favorite browser and check your freshly cooked Napa blog.
+Now you could open you favorite browser and check your freshly cooked Salvia blog.
 
 Congrats and enjoy!

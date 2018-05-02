@@ -2,7 +2,7 @@
     'use strict'
 
     const config = {
-        configFile: './napa.config.json',
+        configFile: './salvia.config.json',
         postsPath: './posts/',
         themesPath: './themes/',
         postReaderPage: './post.html',
@@ -33,7 +33,7 @@
         return element;
     }
 
-    function extractNapaTag(input) {
+    function extractTag(input) {
         let mustache = input.match(/{{.*}}/g);
         if (mustache) {
             let pair = mustache[0].replace(/^{{|}}$/g, '').split(':');
@@ -44,11 +44,12 @@
         }
     }
 
-    function removeNapaTag(input) {
+    function removeTag(input) {
         return input.replace(/{{.*}}/g, '').trim();
     }
 
-    function NAPA(desc) {
+
+    function Salvia(desc) {
         let me = this;
         me.ready = desc.ready;
         me.ajaxCount = 0;
@@ -66,20 +67,20 @@
 
                 // Construct blog components
                 if (desc.el.header) {
-                    me.header = new NAPAHeader({
+                    me.header = new SalviaHeader({
                         el: desc.el.header,
                         blogMeta: me.meta
                     });
                 }
                 if (desc.el.footer) {
-                    me.footer = new NAPAFooter({
+                    me.footer = new SalviaFooter({
                         el: desc.el.footer,
                     });
                 }
                 if (desc.el.feed) {
                     me.ajaxMaxCount = me.meta.posts.length;
-                    me.feed = new NAPAFeed({
-                        napaCore: me,
+                    me.feed = new SalviaFeed({
+                        master: me,
                         el: desc.el.feed,
                         blogMeta: me.meta
                     });
@@ -93,37 +94,37 @@
                         let postKey = postMeta.split('||')[2];
                         if (desc.options.postKey == postKey) {
                             let article = quickCreate('article');
-                            me.post = new NAPAPost({
-                                napaCore: me,
+                            me.post = new SalviaPost({
+                                master: me,
                                 node: article,
                                 postMeta: postMeta,
                                 options: { abstractOnly: false }
                             });
                             let singlePostContainer = document.querySelector(desc.el.post);
-                            singlePostContainer.className = 'napa-container';
+                            singlePostContainer.className = 'salvia-container';
                             singlePostContainer.appendChild(article);
                             isLoaded = true;
                             break;
                         }
                     }
                     if (!isLoaded) {
-                        console.error('NAPA: Failed loading post.');
+                        console.error('Salvia: Failed loading post.');
                     }
                 }
                 if (desc.el.archive) {
-                    me.archive = new NAPAArchive({
+                    me.archive = new SalviaArchive({
                         el: desc.el.archive
                     });
                 }
 
             }
             else {
-                console.error('NAPA: Failed loading configuration file.');
+                console.error('Salvia: Failed loading configuration file.');
             }
         });
     }
 
-    NAPA.prototype.ajaxDone = function () {
+    Salvia.prototype.ajaxDone = function () {
         this.ajaxCount++;
         console.log(this.ajaxCount + '/' + this.ajaxMaxCount);
         if (this.ajaxCount == this.ajaxMaxCount && typeof(this.ready) == 'function') {
@@ -133,51 +134,51 @@
     }
 
 
-    NAPA.util = {
+    Salvia.util = {
         getUrlParamValue: function (param) {
             return (window.location.search.split(param + '=')[1] || '').split('&')[0];
         }
     };
 
 
-    function NAPAHeader(desc) {
+    function SalviaHeader(desc) {
         this.el = desc.el;
-        let titleNode = quickCreate('div', 'napa-title', '<a href="./index.html">' + desc.blogMeta.blog.title + '</a>');
+        let titleNode = quickCreate('div', 'salvia-title', '<a href="./index.html">' + desc.blogMeta.blog.title + '</a>');
         let extraHTML = '';
         for (let i = 0; i < desc.blogMeta.nav.length; i++) {
             let page = desc.blogMeta.nav[i];
             extraHTML = extraHTML + '<li><a href="' + page.href + '">' + page.text + '</a></li>';
         }
-        let navNode = quickCreate('nav', 'napa-nav', '<ul>' + extraHTML + '</ul>');
-        let headerInnerNode = quickCreate('div', 'napa-header-inner');
+        let navNode = quickCreate('nav', 'salvia-nav', '<ul>' + extraHTML + '</ul>');
+        let headerInnerNode = quickCreate('div', 'salvia-header-inner');
         headerInnerNode.appendChild(titleNode);
         headerInnerNode.appendChild(navNode);
         let headerBaseNode = document.querySelector(this.el);
-        headerBaseNode.className = 'napa-header';
+        headerBaseNode.className = 'salvia-header';
         headerBaseNode.appendChild(headerInnerNode);
     }
 
 
-    function NAPAFooter(desc) {
+    function SalviaFooter(desc) {
         this.el = desc.el;
-        let copyrightNode = quickCreate('div', 'napa-copyright', 'Powered by <a href="http://caiyi.us/napa">Napa.js</a> under The MIT License (MIT). Copyright (c) 2017-2018 crafted by <a href="http://caiyi.us">mriiiron</a>');
-        let footerInnerNode = quickCreate('div', 'napa-footer-inner');
+        let copyrightNode = quickCreate('div', 'salvia-copyright', 'Powered by <a href="http://caiyi.us/salvia">Salvia</a>, handcrafted by <a href="http://caiyi.us">mriiiron</a>. MIT License. Copyright (c) 2017-2018.');
+        let footerInnerNode = quickCreate('div', 'salvia-footer-inner');
         footerInnerNode.appendChild(copyrightNode);
         let footerBaseNode = document.querySelector(this.el);
-        footerBaseNode.className = 'napa-footer';
+        footerBaseNode.className = 'salvia-footer';
         footerBaseNode.appendChild(footerInnerNode);
     }
 
 
-    function NAPAFeed(desc) {
-        this.napaCore = desc.napaCore;
+    function SalviaFeed(desc) {
+        this.master = desc.master;
         this.el = desc.el;
         let feedBaseNode = document.querySelector(this.el);
-        feedBaseNode.className = 'napa-container';
+        feedBaseNode.className = 'salvia-container';
         for (let i = 0; i < desc.blogMeta.posts.length; i++) {
-            let article = quickCreate('article', 'napa-post');
-            let post = new NAPAPost({
-                napaCore: this.napaCore,
+            let article = quickCreate('article', 'salvia-post');
+            let post = new SalviaPost({
+                master: this.master,
                 node: article,
                 postMeta: desc.blogMeta.posts[i],
                 options: { abstractOnly: true }
@@ -187,8 +188,8 @@
     }
 
 
-    function NAPAPost(desc) {
-        this.napaCore = desc.napaCore;
+    function SalviaPost(desc) {
+        this.master = desc.master;
         this.node = desc.node;
         let meta = desc.postMeta.split('||');
         this.date = meta[0];
@@ -199,7 +200,7 @@
         this.request(desc.options)
     }
 
-    NAPAPost.prototype.request = function (options) {
+    SalviaPost.prototype.request = function (options) {
         let me = this;
         ajaxGet(config.postsPath + this.key + '.md.txt', 'text', function (status, response) {
             if (status == 200) {
@@ -212,9 +213,9 @@
                 while ((event = walker.next())) {
                     let node = event.node;
                     if (event.entering && node.type == 'text') {
-                        let napaTag = extractNapaTag(node.literal);
-                        if (napaTag) {
-                            switch (napaTag.key) {
+                        let tag = extractTag(node.literal);
+                        if (tag) {
+                            switch (tag.key) {
                                 case 'AbstractBreaker':
                                     if (node.parent.type == 'paragraph') {
                                         node.literal = '[[LinkMeToPost]]';
@@ -223,8 +224,8 @@
                                     break;
                                 case 'NodeID':
                                     if (node.parent.type == 'heading') {
-                                        node.literal = removeNapaTag(node.literal) + '[[MyIdIs:' + napaTag.value + ']]';
-                                        //node.literal = removeNapaTag(node.literal) + (options.abstractOnly ? '' : '[[MyIdIs:' + napaTag.value + ']]');
+                                        node.literal = removeTag(node.literal) + '[[MyIdIs:' + tag.value + ']]';
+                                        //node.literal = removeTag(node.literal) + (options.abstractOnly ? '' : '[[MyIdIs:' + tag.value + ']]');
                                     }
                                     break;
                                 default:
@@ -244,21 +245,21 @@
                 }
                 me.html = writer.render(ast);
                 me.render();
-                me.napaCore.ajaxDone();
+                me.master.ajaxDone();
             }
             else {
-                me.node.innerHTML = 'NAPA: Request to post "' + key + '" failed.';
+                me.node.innerHTML = 'Salvia: Request to post "' + key + '" failed.';
                 me.node.className += ' error';
             }
         });
     };
 
-    NAPAPost.prototype.render = function () {
+    SalviaPost.prototype.render = function () {
         let article = this.node;
-        let postTitle = quickCreate('h1', 'napa-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.key + '">' + this.title + '</a>');
-        let postMeta = quickCreate('p', 'napa-post-meta', '<i><span class="napa-post-date">' + this.date + '</span> by <span class="napa-post-author">' + this.author + '</span></i>');
-        let postContent = quickCreate('div', 'napa-post-content', this.html);
-        article.className = 'napa-post';
+        let postTitle = quickCreate('h1', 'salvia-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.key + '">' + this.title + '</a>');
+        let postMeta = quickCreate('p', 'salvia-post-meta', '<i><span class="salvia-post-date">' + this.date + '</span> by <span class="salvia-post-author">' + this.author + '</span></i>');
+        let postContent = quickCreate('div', 'salvia-post-content', this.html);
+        article.className = 'salvia-post';
         article.innerHTML = '';
         article.appendChild(postTitle);
         article.appendChild(postMeta);
@@ -284,14 +285,14 @@
     };
 
 
-    function NAPAArchive(desc) {
+    function SalviaArchive(desc) {
         this.el = desc.el;
         let archiveBaseNode = document.querySelector(this.el);
-        archiveBaseNode.className = 'napa-container';
+        archiveBaseNode.className = 'salvia-container';
         archiveBaseNode.innerText = 'Coming soon!';
     }
 
-    NAPAArchive.prototype.render = function (data) {
+    SalviaArchive.prototype.render = function (data) {
         let ul = document.createElement('ul');
         for (let i = 0; i < data.length; i++) {
             let li = document.createElement('li');
@@ -309,8 +310,8 @@
 
 
 
-    if (typeof (window.napa) === 'undefined') {
-        window.Napa = NAPA;
+    if (typeof (window.Salvia) === 'undefined') {
+        window.Salvia = Salvia;
     }
 
 })(window, commonmark, Prism);

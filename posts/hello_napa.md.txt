@@ -1,5 +1,0 @@
-Hello Napa!
-
-{{ AbstractBreaker }}
-
-![A Sample Image](https://i.imgur.com/FwTyhOJ.png)

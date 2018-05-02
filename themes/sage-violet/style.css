@@ -1,0 +1,185 @@
+@font-face {
+    font-family: "Lato";
+    src: url("http://caiyi.us/vault/fonts/Lato/Lato-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Reenie Beanie";
+    src: url("http://caiyi.us/vault/fonts/Reenie%20Beanie/ReenieBeanie.ttf");
+}
+
+
+
+/* Color Palette: http://paletton.com/#uid=14w0u0k6qHZ0NYI35RWaHwbg1qK */
+:root {
+    --c-darker: #6d4e90;
+    --c-dark: #9178ad;
+    --c-medium: #baa8ce;
+    --c-light: #ddd3e8;
+    --c-lighter: #f6f4f9;
+    --c-green: #97ae76;
+    --c-text: #555;
+}
+
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: "Lato", "Microsoft YaHei", Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    color: var(--c-text);
+}
+
+a {
+    text-decoration: none;
+    color: var(--c-dark);
+    transition: color .25s;
+}
+
+a:hover {
+    color: var(--c-green);
+}
+
+.salvia-header {
+    background-color: var(--c-dark);
+    color: var(--c-lighter);
+    flex: 0 0 60px;
+}
+
+.salvia-header .salvia-title {
+    font-family: 'Reenie Beanie';
+    font-size: 2.5em;
+}
+
+.salvia-header .salvia-title .salvia-logo {
+    height: 50px;
+    width: 50px;
+    background-image: url(./temp-logo.png);
+}
+
+.salvia-header .salvia-title .salvia-title-text {
+}
+
+.salvia-header a {
+    color: var(--c-lighter);
+}
+
+.salvia-header a:hover {
+    text-decoration: underline;
+}
+
+.salvia-header-inner {
+    width: 900px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.salvia-footer {
+    flex: 0 0 auto;
+    border-top: 1px solid var(--c-lighter);
+}
+
+.salvia-footer-inner {
+    width: 900px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.salvia-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.salvia-nav ul li {
+    display: inline-block;
+    padding: 0 10px;
+}
+
+.salvia-title {
+    font-size: 1.5em;
+    letter-spacing: 2px;
+}
+
+.salvia-container {
+    width: 900px;
+    margin: auto;
+    flex: 1 0 auto;
+}
+
+.salvia-post {
+    margin-bottom: 50px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--c-lighter);
+}
+
+.salvia-post:last-child {
+    border-bottom: none;
+}
+
+.salvia-post-title {
+    letter-spacing: 1px;
+}
+
+.salvia-post h1, .salvia-post h2, .salvia-post h3, .salvia-post h4, .salvia-post h5, .salvia-post h6 {
+    font-weight: normal;
+}
+
+.salvia-post h1 {
+    font-size: 1.75em;
+}
+
+.salvia-post h2 {
+    margin-top: 40px;
+}
+
+.salvia-post h3 {
+    margin-top: 30px;
+}
+
+.salvia-post h4, .salvia-post h5, .salvia-post h6 {
+    margin: 10px 0 5px 0;
+}
+
+.salvia-post pre {
+    background-color: #333;
+    color: #eee;
+    padding: 10px 20px;
+    overflow-x: auto;
+}
+
+.salvia-post pre code {
+    background-color: #333;
+    padding: 0;
+}
+
+.salvia-post code {
+    background-color: #eee;
+    padding: 2px 4px;
+}
+
+.salvia-post blockquote {
+    border-left: 3px solid var(--c-light);
+    margin: 25px 10px;
+    padding: 7px 10px;
+    color: var(--c-darker)
+}
+
+.salvia-post blockquote p {
+    margin: 0;
+}
+
+.salvia-post h4 + blockquote {
+    border-left: none;
+    margin: 0 40px;
+    color: #333;
+}
