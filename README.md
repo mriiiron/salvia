@@ -1,4 +1,4 @@
-# Salvia
+# SalviaJS
 
 A fast and easy blog framework featuring minimum building. Only some optional configurations would be built, and posts in Markdown would be parsed on-the-fly.
 
@@ -40,7 +40,7 @@ let blog = new Napa({
 });
 ```
 
-[View Full Guide](http://caiyi.us/napa/post.html?postKey=quick_start)
+[View Full Guide](http://caiyi.us/salvia/post.html?postKey=quick_start)
 
 ## License
 
