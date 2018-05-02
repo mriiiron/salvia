@@ -1,10 +1,10 @@
-# Napa
+# Salvia
 
-A fast and easy blog framework. Forget about building, it would parse Markdown files on-the-fly.
+A fast and easy blog framework featuring minimum building. Only some optional configurations would be built, and posts in Markdown would be parsed on-the-fly.
 
 ## Features
 
-- No building required. [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG), and forget about the time you wasted while generating massive number of posts.
+- [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG), and forget about the time you wasted while generating massive number of posts.
 - Parser based on [CommonMark](https://github.com/commonmark/commonmark.js), enhanced with [more useful features](http://caiyi.us/napa/post.html?postKey=api_doc).
 
 ## Installation
