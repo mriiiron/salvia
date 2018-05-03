@@ -46,7 +46,7 @@ a:hover {
 
 .salvia-header {
     background-color: var(--c-dark);
-    color: var(--c-lighter);
+    color: var(--c-light);
     flex: 0 0 60px;
 }
 
@@ -65,11 +65,11 @@ a:hover {
 }
 
 .salvia-header a {
-    color: var(--c-lighter);
+    color: var(--c-light);
 }
 
 .salvia-header a:hover {
-    text-decoration: underline;
+    color: var(--c-lighter);
 }
 
 .salvia-header-inner {

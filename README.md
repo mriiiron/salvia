@@ -2,6 +2,8 @@
 
 A fast and easy blog framework featuring minimum building. Only some optional configurations would be built, and posts in Markdown would be parsed on-the-fly.
 
+![Sage](./assets/sage.jpg)
+
 ## Features
 
 - [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG), and forget about the time you wasted while generating massive number of posts.

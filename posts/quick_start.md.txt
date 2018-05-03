@@ -38,14 +38,14 @@ root
 
 ## Preparing Sample Post {{ NodeID: prepare-sample }}
 
-Create a text file hello.md.txt` inside `post` folder with following contents:
+Create a text file `hello.md.txt` inside `post` folder with following contents:
 
 ```
 Hello Salvia!
 
 {{ AbstractBreaker }}
 
-![A Sample Image](https://i.imgur.com/FwTyhOJ.png)
+![A Sample Image](https://img.aws.livestrongcdn.com/ls-article-image-673/ds-photo/getty/article/139/42/480866891.jpg)
 ```
 
 The "mustache tag", `{{ AbstractBreaker }}`, indicates there's an abstract breaker. Contents before this tag would be treated as abstract of this post. When rendering a post you have the choice to render the whole post or render the abstract only. For more information, see [Salvia API](./post.html?postKey=api_doc).
