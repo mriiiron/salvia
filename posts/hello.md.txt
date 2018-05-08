@@ -1,3 +1,10 @@
+=====
+title:      Hello Salvia!
+date:       2018-05-08
+category:   Sample
+tags:       sample, photo
+=====
+
 Hello Salvia!
 
 {{ AbstractBreaker }}

@@ -232,7 +232,6 @@
                                     break;
                             }
                         }
-
                     }
                 }
                 if (abstractBreaker) {
