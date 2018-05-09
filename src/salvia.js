@@ -88,28 +88,38 @@
                 }
                 if (desc.el.post) {
                     me.ajaxMaxCount = 1;
-                    let isLoaded = false;
-                    for (let i = 0; i < me.meta.posts.length; i++) {
-                        let postMeta = me.meta.posts[i];
-                        let postKey = postMeta.split('||')[2];
-                        if (desc.options.postKey == postKey) {
-                            let article = quickCreate('article');
-                            me.post = new SalviaPost({
-                                master: me,
-                                node: article,
-                                postMeta: postMeta,
-                                options: { abstractOnly: false }
-                            });
-                            let singlePostContainer = document.querySelector(desc.el.post);
-                            singlePostContainer.className = 'salvia-container';
-                            singlePostContainer.appendChild(article);
-                            isLoaded = true;
-                            break;
+
+                    // Using config file for posts
+                    if (me.meta.posts) {
+                        let isLoaded = false;
+                        for (let i = 0; i < me.meta.posts.length; i++) {
+                            let postMeta = me.meta.posts[i];
+                            let postKey = postMeta.split('||')[2];
+                            if (desc.options.postKey == postKey) {
+                                let article = quickCreate('article');
+                                me.post = new SalviaPost({
+                                    master: me,
+                                    node: article,
+                                    postMeta: postMeta,
+                                    options: { abstractOnly: false }
+                                });
+                                let singlePostContainer = document.querySelector(desc.el.post);
+                                singlePostContainer.className = 'salvia-container';
+                                singlePostContainer.appendChild(article);
+                                isLoaded = true;
+                                break;
+                            }
+                        }
+                        if (!isLoaded) {
+                            console.error('Salvia: Failed loading post.');
                         }
                     }
-                    if (!isLoaded) {
-                        console.error('Salvia: Failed loading post.');
+
+                    // Using built metadata for posts
+                    else {
+                        // TODO
                     }
+
                 }
                 if (desc.el.archive) {
                     me.archive = new SalviaArchive({
@@ -175,27 +185,48 @@
         this.el = desc.el;
         let feedBaseNode = document.querySelector(this.el);
         feedBaseNode.className = 'salvia-container';
-        for (let i = 0; i < desc.blogMeta.posts.length; i++) {
-            let article = quickCreate('article', 'salvia-post');
-            let post = new SalviaPost({
-                master: this.master,
-                node: article,
-                postMeta: desc.blogMeta.posts[i],
-                options: { abstractOnly: true }
-            });
-            feedBaseNode.appendChild(post.node);
+
+        // Use config file for posts
+        if (desc.blogMeta.posts) {
+            for (let i = 0; i < desc.blogMeta.posts.length; i++) {
+                let article = quickCreate('article', 'salvia-post');
+                let post = new SalviaPost({
+                    master: this.master,
+                    node: article,
+                    postMeta: desc.blogMeta.posts[i],
+                    options: { abstractOnly: true }
+                });
+                feedBaseNode.appendChild(post.node);
+            }
         }
+
+        // Use built metadata for posts
+        else {
+            // TODO
+        }
+
     }
 
 
     function SalviaPost(desc) {
         this.master = desc.master;
         this.node = desc.node;
-        let meta = desc.postMeta.split('||');
-        this.date = meta[0];
-        this.author = meta[1];
-        this.key = meta[2];
-        this.title = (meta[3] ? meta[3] : this.key);
+
+        // Metadata fallbacks
+        this.date = '1900-01-01';
+        this.author = 'UNKNOWN';
+        this.key = 'UNKNOWN';
+        this.title = 'UNKNOWN';
+
+        // Load metadata from config file
+        if (desc.postMeta) {
+            let meta = desc.postMeta.split('||');
+            this.date = meta[0];
+            this.author = meta[1];
+            this.key = meta[2];
+            this.title = (meta[3] ? meta[3] : this.key);
+        }
+        
         this.html = null;
         this.request(desc.options)
     }
@@ -207,6 +238,18 @@
                 let reader = new commonmark.Parser();
                 let writer = new commonmark.HtmlRenderer();
                 let ast = reader.parse(response);
+
+                // Load metadata from post. Overrides metadata in config file.
+                if (ast.firstChild.type == 'code_block') {
+                    let metaInPost = ast.firstChild.literal.split('\n');
+                    if (metaInPost[0].startsWith('title:')) {
+
+                        // TODO
+
+                        ast.firstChild.unlink();
+                    }
+                }
+
                 let walker = ast.walker();
                 let abstractBreaker = null;
                 let event;

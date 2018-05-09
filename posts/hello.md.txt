@@ -1,9 +1,10 @@
-=====
+```
 title:      Hello Salvia!
+author:     mriiiron
 date:       2018-05-08
 category:   Sample
 tags:       sample, photo
-=====
+```
 
 Hello Salvia!
 
