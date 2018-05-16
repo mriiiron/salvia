@@ -3,21 +3,22 @@
 
     const config = {
         configFile: './salvia.config.json',
+        metaFile: './salvia.meta.json',
         postsPath: './posts/',
         themesPath: './themes/',
         postReaderPage: './post.html',
     };
 
-    function ajaxGet(url, returnType, callback) {
+    function ajaxGet(url, returnType, onSuccess, onFailure) {
         let xhr = new XMLHttpRequest();
         xhr.responseType = returnType;
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
-                    callback(xhr.status, xhr.response);
+                    onSuccess(xhr.status, xhr.response);
                 }
                 else {
-                    callback(xhr.status, null);
+                    onFailure(xhr.status, xhr.response);
                     console.warn('AJAX request to', url, 'failed. Got status', xhr.status);
                 }
             }
@@ -55,82 +56,86 @@
         me.ajaxCount = 0;
         me.ajaxMaxCount = 0;
         ajaxGet(config.configFile, 'json', function (status, response) {
-            if (status == 200 && response) {
-                me.meta = response;
 
-                // Load theme
-                let link = document.createElement("link");
-                link.rel = "stylesheet";
-                link.type = "text/css";
-                link.href = config.themesPath + me.meta.blog.theme + '/style.css';
-                document.getElementsByTagName("head")[0].appendChild(link);
+            me.blogMeta = response;
 
-                // Construct blog components
-                if (desc.el.header) {
-                    me.header = new SalviaHeader({
-                        el: desc.el.header,
-                        blogMeta: me.meta
-                    });
-                }
-                if (desc.el.footer) {
-                    me.footer = new SalviaFooter({
-                        el: desc.el.footer,
-                    });
-                }
-                if (desc.el.feed) {
-                    me.ajaxMaxCount = me.meta.posts.length;
-                    me.feed = new SalviaFeed({
-                        master: me,
-                        el: desc.el.feed,
-                        blogMeta: me.meta
-                    });
 
-                }
-                if (desc.el.post) {
-                    me.ajaxMaxCount = 1;
 
-                    // Using config file for posts
-                    if (me.meta.posts) {
-                        let isLoaded = false;
-                        for (let i = 0; i < me.meta.posts.length; i++) {
-                            let postMeta = me.meta.posts[i];
-                            let postKey = postMeta.split('||')[2];
-                            if (desc.options.postKey == postKey) {
-                                let article = quickCreate('article');
-                                me.post = new SalviaPost({
-                                    master: me,
-                                    node: article,
-                                    postMeta: postMeta,
-                                    options: { abstractOnly: false }
-                                });
-                                let singlePostContainer = document.querySelector(desc.el.post);
-                                singlePostContainer.className = 'salvia-container';
-                                singlePostContainer.appendChild(article);
-                                isLoaded = true;
-                                break;
-                            }
-                        }
-                        if (!isLoaded) {
-                            console.error('Salvia: Failed loading post.');
+
+
+
+
+            // Load theme
+            let link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.href = config.themesPath + me.blogMeta.blog.theme + '/style.css';
+            document.getElementsByTagName("head")[0].appendChild(link);
+
+            // Construct blog components
+            if (desc.el.header) {
+                me.header = new SalviaHeader({
+                    el: desc.el.header,
+                    blogMeta: me.blogMeta
+                });
+            }
+            if (desc.el.footer) {
+                me.footer = new SalviaFooter({
+                    el: desc.el.footer,
+                });
+            }
+            if (desc.el.feed) {
+                me.ajaxMaxCount = me.blogMeta.posts.length;
+                me.feed = new SalviaFeed({
+                    master: me,
+                    el: desc.el.feed,
+                    blogMeta: me.blogMeta
+                });
+
+            }
+            if (desc.el.post) {
+                me.ajaxMaxCount = 1;
+
+                // Using config file for posts
+                if (me.blogMeta.posts) {
+                    let isLoaded = false;
+                    for (let i = 0; i < me.blogMeta.posts.length; i++) {
+                        let postMeta = me.blogMeta.posts[i];
+                        let postKey = postMeta.split('||')[2];
+                        if (desc.options.postKey == postKey) {
+                            let article = quickCreate('article');
+                            me.post = new SalviaPost({
+                                master: me,
+                                node: article,
+                                postMeta: postMeta,
+                                options: { abstractOnly: false }
+                            });
+                            let singlePostContainer = document.querySelector(desc.el.post);
+                            singlePostContainer.className = 'salvia-container';
+                            singlePostContainer.appendChild(article);
+                            isLoaded = true;
+                            break;
                         }
                     }
-
-                    // Using built metadata for posts
-                    else {
-                        // TODO
+                    if (!isLoaded) {
+                        console.error('Salvia: Failed loading post.');
                     }
-
                 }
-                if (desc.el.archive) {
-                    me.archive = new SalviaArchive({
-                        el: desc.el.archive
-                    });
+
+                // Using built metadata for posts
+                else {
+                    // TODO
                 }
 
             }
-            else {
-                console.error('Salvia: Failed loading configuration file.');
+            if (desc.el.archive) {
+                me.archive = new SalviaArchive({
+                    el: desc.el.archive
+                });
             }
+
+        }, function (status, response) {
+            console.error('Salvia: Failed loading configuration file.');
         });
     }
 
@@ -226,7 +231,7 @@
             this.key = meta[2];
             this.title = (meta[3] ? meta[3] : this.key);
         }
-        
+
         this.html = null;
         this.request(desc.options)
     }
