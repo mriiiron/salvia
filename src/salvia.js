@@ -19,7 +19,7 @@
                 }
                 else {
                     onFailure(xhr.status, xhr.response);
-                    console.warn('AJAX request to', url, 'failed. Got status', xhr.status);
+                    console.error('AJAX request to', url, 'failed. Got status', xhr.status);
                 }
             }
         }
@@ -38,7 +38,7 @@
                     }
                     else {
                         reject(Error(request.status));
-                        console.warn('AJAX request to', url, 'failed. Got status', request.status);
+                        console.error('AJAX request to', url, 'failed. Got status', request.status);
                     }
                 }
             };
@@ -77,8 +77,6 @@
     function Salvia(desc) {
         let me = this;
         me.ready = desc.ready;
-        me.ajaxCount = 0;
-        me.ajaxMaxCount = 0;
 
         Promise.all([
             ajax(config.blogConfigFile, 'json'),
@@ -108,37 +106,40 @@
                 });
             }
             if (desc.el.feed) {
-                me.ajaxMaxCount = postsMeta.posts.length;
                 me.feed = new SalviaFeed({
                     master: me,
                     el: desc.el.feed,
                     blogMeta: blogMeta,
                     postsMeta: postsMeta
                 });
-
             }
             if (desc.el.post) {
-                me.ajaxMaxCount = 1;
                 let isLoaded = false;
                 for (let i = 0; i < postsMeta.posts.length; i++) {
-                    let post = postsMeta.posts[i];
-                    if (desc.options.postKey == post.key) {
-                        let article = quickCreate('article');
+                    let postMeta = postsMeta.posts[i];
+                    if (desc.options.postKey == postMeta.key) {
+                        let articleNode = quickCreate('article');
                         me.post = new SalviaPost({
                             master: me,
-                            node: article,
-                            postMeta: post,
-                            options: { abstractOnly: false }
+                            node: articleNode,
+                            meta: postMeta,
+                            renderOptions: { abstractOnly: false }
                         });
                         let singlePostContainer = document.querySelector(desc.el.post);
                         singlePostContainer.className = 'salvia-container';
-                        singlePostContainer.appendChild(article);
+                        singlePostContainer.appendChild(articleNode);
+                        me.post.request().then((value) => {
+                            me.post.parse(value);
+                            me.done();
+                        }, function (reason) {
+                            console.error(reason);
+                        });
                         isLoaded = true;
                         break;
                     }
                 }
                 if (!isLoaded) {
-                    console.error('Salvia: Failed loading post.');
+                    console.error('Salvia: Cannot find post with key "' + desc.options.postKey + '".');
                 }
 
             }
@@ -147,30 +148,20 @@
                     el: desc.el.archive
                 });
             }
-
-
         }, function (reason) {
             console.error('Salvia: Failed loading all configuration file.');
         });
-
-
     }
-
-    Salvia.prototype.ajaxDone = function () {
-        this.ajaxCount++;
-        console.log(this.ajaxCount + '/' + this.ajaxMaxCount);
-        if (this.ajaxCount == this.ajaxMaxCount && typeof(this.ready) == 'function') {
-            Prism.highlightAll();
-            this.ready();
-        }
-    }
-
 
     Salvia.util = {
         getUrlParamValue: function (param) {
             return (window.location.search.split(param + '=')[1] || '').split('&')[0];
         }
     };
+
+    Salvia.prototype.done = function () {
+        Prism.highlightAll();
+    }
 
 
     function SalviaHeader(desc) {
@@ -209,7 +200,6 @@
         let feedBaseNode = document.querySelector(this.el);
         feedBaseNode.className = 'salvia-container';
         let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(a.date) - new Date(b.date)));
-
         let postRequests = [];
         for (let i = 0; i < postsMeta.length; i++) {
             let articleNode = quickCreate('article', 'salvia-post');
@@ -218,25 +208,19 @@
                 master: this.master,
                 node: articleNode,
                 meta: postsMeta[i],
-                options: { abstractOnly: true }
+                renderOptions: { abstractOnly: true }
             });
             this.posts.push(post);
             postRequests.push(post.request());
         }
-
         Promise.all(postRequests).then((values) => {
-
             for (let i = 0; i < values.length; i++) {
                 this.posts[i].parse(values[i]);
             }
-
-
+            this.master.done();
         }, function (reason) {
-
-        })
-
-
-
+            console.error(reason);
+        });
     }
 
 
@@ -249,26 +233,14 @@
         this.meta = {
             key: desc.meta.key,
             title: desc.meta.title,
-            date: desc.meta.date,
-            title: desc.meta.title
+            date: new Date(desc.meta.date),
+            author: desc.meta.author
         };
         this.html = null;
     }
 
     SalviaPost.prototype.request = function () {
-
         return ajax(config.postsPath + this.meta.key + '.md.txt', 'text');
-
-        // let me = this;
-        // ajaxGet(config.postsPath + this.key + '.md.txt', 'text', function (status, response) {
-        //     if (status == 200) {
-        //         me.parse(response);
-        //     }
-        //     else {
-        //         me.node.innerHTML = 'Salvia: Request to post "' + key + '" failed.';
-        //         me.node.className += ' error';
-        //     }
-        // });
     };
 
     SalviaPost.prototype.parse = function (raw) {
@@ -306,7 +278,7 @@
             }
         }
         if (abstractBreaker) {
-            if (this.options.abstractOnly) {
+            if (this.renderOptions.abstractOnly) {
                 while (abstractBreaker.next) { abstractBreaker.next.unlink() }
             }
             else {
@@ -315,13 +287,12 @@
         }
         this.html = writer.render(ast);
         this.render();
-        this.master.ajaxDone();
     }
 
     SalviaPost.prototype.render = function () {
         let article = this.node;
-        let postTitle = quickCreate('h1', 'salvia-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.key + '">' + this.title + '</a>');
-        let postMeta = quickCreate('p', 'salvia-post-meta', '<i><span class="salvia-post-date">' + this.date + '</span> by <span class="salvia-post-author">' + this.author + '</span></i>');
+        let postTitle = quickCreate('h1', 'salvia-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.meta.key + '">' + this.meta.title + '</a>');
+        let postMeta = quickCreate('p', 'salvia-post-meta', '<i><span class="salvia-post-date">' + this.meta.date.toISOString().replace(/T.*$/g, '') + '</span> by <span class="salvia-post-author">' + this.meta.author + '</span></i>');
         let postContent = quickCreate('div', 'salvia-post-content', this.html);
         article.className = 'salvia-post';
         article.innerHTML = '';
@@ -331,7 +302,7 @@
         let pTags = article.querySelectorAll('p');
         for (let i = 0; i < pTags.length; i++) {
             if (pTags[i].innerText == '[[LinkMeToPost]]') {
-                pTags[i].innerHTML = '<a href="' + config.postReaderPage + '?postKey=' + this.key + '">Continue reading ...</a>';
+                pTags[i].innerHTML = '<a href="' + config.postReaderPage + '?postKey=' + this.meta.key + '">Continue reading ...</a>';
             }
         }
         let hTags = article.querySelectorAll('h1, h2, h3, h4, h5, h6');
