@@ -3,7 +3,7 @@
 
     const config = {
         blogConfigFile: './salvia.blog.json',
-        postsMetaFile: './salvia.meta.json',
+        postsMetaFile: './salvia.posts.json',
         postsPath: './posts/',
         themesPath: './themes/',
         postReaderPage: './post.html',
@@ -80,13 +80,75 @@
         me.ajaxCount = 0;
         me.ajaxMaxCount = 0;
 
-        let pBlogConfig = ajax(config.blogConfigFile, 'json');
-        let pPostsMeta = ajax(config.postsMetaFile, 'json');
+        Promise.all([
+            ajax(config.blogConfigFile, 'json'),
+            ajax(config.postsMetaFile, 'json')
+        ]).then(function (values) {
 
-        Promise.all([pBlogConfig, pPostsMeta]).then(function (values) {
+            let blogMeta = values[0];
 
+            // Load theme
+            let link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.href = config.themesPath + blogMeta.blog.theme + '/style.css';
+            document.getElementsByTagName("head")[0].appendChild(link);
 
-            // TODO
+            // Construct blog components
+            if (desc.el.header) {
+                me.header = new SalviaHeader({
+                    el: desc.el.header,
+                    blogMeta: blogMeta
+                });
+            }
+            if (desc.el.footer) {
+                me.footer = new SalviaFooter({
+                    el: desc.el.footer,
+                });
+            }
+            if (desc.el.feed) {
+                me.ajaxMaxCount = blogMeta.posts.length;
+                me.feed = new SalviaFeed({
+                    master: me,
+                    el: desc.el.feed,
+                    blogMeta: blogMeta
+                });
+
+            }
+            if (desc.el.post) {
+                me.ajaxMaxCount = 1;
+
+                let postsMeta = values[1];
+
+                let isLoaded = false;
+                for (let i = 0; i < postsMeta.length; i++) {
+                    let postMeta = postsMeta[i];
+                    let postKey = postMeta.split('||')[2];
+                    if (desc.options.postKey == postKey) {
+                        let article = quickCreate('article');
+                        me.post = new SalviaPost({
+                            master: me,
+                            node: article,
+                            postMeta: postMeta,
+                            options: { abstractOnly: false }
+                        });
+                        let singlePostContainer = document.querySelector(desc.el.post);
+                        singlePostContainer.className = 'salvia-container';
+                        singlePostContainer.appendChild(article);
+                        isLoaded = true;
+                        break;
+                    }
+                }
+                if (!isLoaded) {
+                    console.error('Salvia: Failed loading post.');
+                }
+
+            }
+            if (desc.el.archive) {
+                me.archive = new SalviaArchive({
+                    el: desc.el.archive
+                });
+            }
 
 
         }, function (reason) {
