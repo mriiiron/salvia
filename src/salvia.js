@@ -205,27 +205,30 @@
     function SalviaFeed(desc) {
         this.master = desc.master;
         this.el = desc.el;
+        this.posts = [];
         let feedBaseNode = document.querySelector(this.el);
         feedBaseNode.className = 'salvia-container';
-        let posts = desc.postsMeta.posts.sort((a, b) => (new Date(a.date) - new Date(b.date)));
+        let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(a.date) - new Date(b.date)));
 
-        let postPromises = [];
-        for (let i = 0; i < posts.length; i++) {
-            postPromises.push(ajax(config.postsPath + posts[i].key + '.md.txt', 'text'));
+        let postRequests = [];
+        for (let i = 0; i < postsMeta.length; i++) {
+            let articleNode = quickCreate('article', 'salvia-post');
+            feedBaseNode.appendChild(articleNode);
+            let post = new SalviaPost({
+                master: this.master,
+                node: articleNode,
+                meta: postsMeta[i],
+                options: { abstractOnly: true }
+            });
+            this.posts.push(post);
+            postRequests.push(post.request());
         }
-        Promise.all(postPromises).then(function (values) {
 
-            for (let i = 0; i < posts.length; i++) {
-                let article = quickCreate('article', 'salvia-post');
-                let post = new SalviaPost({
-                    master: this.master,
-                    node: article,
-                    postMeta: posts[i],
-                    options: { abstractOnly: true }
-                });
-                feedBaseNode.appendChild(post.node);
+        Promise.all(postRequests).then((values) => {
+
+            for (let i = 0; i < values.length; i++) {
+                this.posts[i].parse(values[i]);
             }
-
 
 
         }, function (reason) {
@@ -243,32 +246,29 @@
         this.renderOptions = {
             abstractOnly: desc.renderOptions.abstractOnly
         };
-        this.key = desc.postMeta.key;
-        this.date = desc.postMeta.date;
-        this.author = desc.postMeta.author;
-        this.title = desc.postMeta.title;
+        this.meta = {
+            key: desc.meta.key,
+            title: desc.meta.title,
+            date: desc.meta.date,
+            title: desc.meta.title
+        };
         this.html = null;
-
-        if (desc.content) {
-            this.parse(desc.content)
-        }
-        else {
-            this.request(desc.options);
-        }
-
     }
 
     SalviaPost.prototype.request = function () {
-        let me = this;
-        ajaxGet(config.postsPath + this.key + '.md.txt', 'text', function (status, response) {
-            if (status == 200) {
-                me.parse(response);
-            }
-            else {
-                me.node.innerHTML = 'Salvia: Request to post "' + key + '" failed.';
-                me.node.className += ' error';
-            }
-        });
+
+        return ajax(config.postsPath + this.meta.key + '.md.txt', 'text');
+
+        // let me = this;
+        // ajaxGet(config.postsPath + this.key + '.md.txt', 'text', function (status, response) {
+        //     if (status == 200) {
+        //         me.parse(response);
+        //     }
+        //     else {
+        //         me.node.innerHTML = 'Salvia: Request to post "' + key + '" failed.';
+        //         me.node.className += ' error';
+        //     }
+        // });
     };
 
     SalviaPost.prototype.parse = function (raw) {
