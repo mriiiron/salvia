@@ -209,14 +209,22 @@
         feedBaseNode.className = 'salvia-container';
         let posts = desc.postsMeta.posts.sort((a, b) => (new Date(a.date) - new Date(b.date)));
 
-
         let postPromises = [];
         for (let i = 0; i < posts.length; i++) {
             postPromises.push(ajax(config.postsPath + posts[i].key + '.md.txt', 'text'));
         }
         Promise.all(postPromises).then(function (values) {
 
-            debugger;
+            for (let i = 0; i < posts.length; i++) {
+                let article = quickCreate('article', 'salvia-post');
+                let post = new SalviaPost({
+                    master: this.master,
+                    node: article,
+                    postMeta: posts[i],
+                    options: { abstractOnly: true }
+                });
+                feedBaseNode.appendChild(post.node);
+            }
 
 
 
@@ -225,82 +233,36 @@
         })
 
 
-        // for (let i = 0; i < posts.length; i++) {
-        //     let article = quickCreate('article', 'salvia-post');
-        //     let post = new SalviaPost({
-        //         master: this.master,
-        //         node: article,
-        //         postMeta: posts[i],
-        //         options: { abstractOnly: true }
-        //     });
-        //     feedBaseNode.appendChild(post.node);
-        // }
+
     }
 
 
     function SalviaPost(desc) {
         this.master = desc.master;
         this.node = desc.node;
+        this.renderOptions = {
+            abstractOnly: desc.renderOptions.abstractOnly
+        };
         this.key = desc.postMeta.key;
         this.date = desc.postMeta.date;
         this.author = desc.postMeta.author;
         this.title = desc.postMeta.title;
         this.html = null;
-        this.request(desc.options);
+
+        if (desc.content) {
+            this.parse(desc.content)
+        }
+        else {
+            this.request(desc.options);
+        }
+
     }
 
-    SalviaPost.prototype.request = function (options) {
+    SalviaPost.prototype.request = function () {
         let me = this;
         ajaxGet(config.postsPath + this.key + '.md.txt', 'text', function (status, response) {
             if (status == 200) {
-                let reader = new commonmark.Parser();
-                let writer = new commonmark.HtmlRenderer();
-                let ast = reader.parse(response);
-
-                // Load metadata from post. Overrides metadata in config file.
-                if (ast.firstChild.type == 'code_block') {
-                    // TODO
-                    ast.firstChild.unlink();
-                }
-
-                let walker = ast.walker();
-                let abstractBreaker = null;
-                let event;
-                while ((event = walker.next())) {
-                    let node = event.node;
-                    if (event.entering && node.type == 'text') {
-                        let tag = extractTag(node.literal);
-                        if (tag) {
-                            switch (tag.key) {
-                                case 'AbstractBreaker':
-                                    if (node.parent.type == 'paragraph') {
-                                        node.literal = '[[LinkMeToPost]]';
-                                        abstractBreaker = node.parent;
-                                    }
-                                    break;
-                                case 'NodeID':
-                                    if (node.parent.type == 'heading') {
-                                        node.literal = removeTag(node.literal) + '[[MyIdIs:' + tag.value + ']]';
-                                        //node.literal = removeTag(node.literal) + (options.abstractOnly ? '' : '[[MyIdIs:' + tag.value + ']]');
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-                if (abstractBreaker) {
-                    if (options.abstractOnly) {
-                        while (abstractBreaker.next) { abstractBreaker.next.unlink() }
-                    }
-                    else {
-                        abstractBreaker.unlink();
-                    }
-                }
-                me.html = writer.render(ast);
-                me.render();
-                me.master.ajaxDone();
+                me.parse(response);
             }
             else {
                 me.node.innerHTML = 'Salvia: Request to post "' + key + '" failed.';
@@ -308,6 +270,53 @@
             }
         });
     };
+
+    SalviaPost.prototype.parse = function (raw) {
+        let reader = new commonmark.Parser();
+        let writer = new commonmark.HtmlRenderer();
+        let ast = reader.parse(raw);
+        if (ast.firstChild.type == 'code_block') {
+            ast.firstChild.unlink();
+        }
+        let walker = ast.walker();
+        let abstractBreaker = null;
+        let event;
+        while ((event = walker.next())) {
+            let node = event.node;
+            if (event.entering && node.type == 'text') {
+                let tag = extractTag(node.literal);
+                if (tag) {
+                    switch (tag.key) {
+                        case 'AbstractBreaker':
+                            if (node.parent.type == 'paragraph') {
+                                node.literal = '[[LinkMeToPost]]';
+                                abstractBreaker = node.parent;
+                            }
+                            break;
+                        case 'NodeID':
+                            if (node.parent.type == 'heading') {
+                                node.literal = removeTag(node.literal) + '[[MyIdIs:' + tag.value + ']]';
+                                //node.literal = removeTag(node.literal) + (options.abstractOnly ? '' : '[[MyIdIs:' + tag.value + ']]');
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        if (abstractBreaker) {
+            if (this.options.abstractOnly) {
+                while (abstractBreaker.next) { abstractBreaker.next.unlink() }
+            }
+            else {
+                abstractBreaker.unlink();
+            }
+        }
+        this.html = writer.render(ast);
+        this.render();
+        this.master.ajaxDone();
+    }
 
     SalviaPost.prototype.render = function () {
         let article = this.node;
