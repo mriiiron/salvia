@@ -1,4 +1,4 @@
-(function (window, commonmark, Prism) {
+(function (window, commonmark, Prism, PrismStyles) {
     'use strict'
 
     const config = {
@@ -91,63 +91,85 @@
             link.rel = "stylesheet";
             link.type = "text/css";
             link.href = config.themesPath + blogMeta.blog.theme + '/style.css';
-            document.getElementsByTagName("head")[0].appendChild(link);
+            document.head.appendChild(link);
+
+            // Load Prism styles for code highlight
+            document.head.appendChild(PrismStyles);
 
             // Construct blog components
             if (desc.el.header) {
-                me.header = new SalviaHeader({
-                    el: desc.el.header,
-                    blogMeta: blogMeta
-                });
+                if (document.querySelector(desc.el.header)) {
+                    me.header = new SalviaHeader({
+                        el: desc.el.header,
+                        blogMeta: blogMeta
+                    });
+                }
+                else {
+                    console.error('Salvia: Cannot find element "' + desc.el.header + '"');
+                }
             }
             if (desc.el.footer) {
-                me.footer = new SalviaFooter({
-                    el: desc.el.footer,
-                });
+                if (document.querySelector(desc.el.footer)) {
+                    me.footer = new SalviaFooter({
+                        el: desc.el.footer,
+                    });
+                }
+                else {
+                    console.error('Salvia: Cannot find element "' + desc.el.footer + '"');
+                }
             }
             if (desc.el.feed) {
-                me.feed = new SalviaFeed({
-                    master: me,
-                    el: desc.el.feed,
-                    blogMeta: blogMeta,
-                    postsMeta: postsMeta
-                });
+                if (document.querySelector(desc.el.feed)) {
+                    me.feed = new SalviaFeed({
+                        master: me,
+                        el: desc.el.feed,
+                        blogMeta: blogMeta,
+                        postsMeta: postsMeta
+                    });
+                }
+                else {
+                    console.error('Salvia: Cannot find element "' + desc.el.feed + '"');
+                }
             }
             if (desc.el.post) {
-                let isLoaded = false;
-                for (let i = 0; i < postsMeta.posts.length; i++) {
-                    let postMeta = postsMeta.posts[i];
-                    if (desc.options.postKey == postMeta.key) {
-                        let articleNode = quickCreate('article');
-                        me.post = new SalviaPost({
-                            master: me,
-                            node: articleNode,
-                            meta: postMeta,
-                            renderOptions: { abstractOnly: false }
-                        });
-                        let singlePostContainer = document.querySelector(desc.el.post);
-                        singlePostContainer.className = 'salvia-container';
-                        singlePostContainer.appendChild(articleNode);
-                        me.post.request().then((value) => {
-                            me.post.parse(value);
-                            me.done();
-                        }, function (reason) {
-                            console.error(reason);
-                        });
-                        isLoaded = true;
-                        break;
+                if (document.querySelector(desc.el.post)) {
+                    let isLoaded = false;
+                    for (let i = 0; i < postsMeta.posts.length; i++) {
+                        let postMeta = postsMeta.posts[i];
+                        if (desc.options.postKey == postMeta.key) {
+                            let articleNode = quickCreate('article');
+                            me.post = new SalviaPost({
+                                master: me,
+                                node: articleNode,
+                                meta: postMeta,
+                                renderOptions: { abstractOnly: false }
+                            });
+                            let singlePostContainer = document.querySelector(desc.el.post);
+                            singlePostContainer.className = 'salvia-container';
+                            singlePostContainer.appendChild(articleNode);
+                            me.post.request().then((value) => {
+                                me.post.parse(value);
+                                me.done();
+                            }, function (reason) {
+                                console.error(reason);
+                            });
+                            isLoaded = true;
+                            break;
+                        }
+                    }
+                    if (!isLoaded) {
+                        console.error('Salvia: Cannot find post with key "' + desc.options.postKey + '".');
                     }
                 }
-                if (!isLoaded) {
-                    console.error('Salvia: Cannot find post with key "' + desc.options.postKey + '".');
+                else {
+                    console.error('Salvia: Cannot find element "' + desc.el.post + '"');
                 }
-
             }
-            if (desc.el.archive) {
-                me.archive = new SalviaArchive({
-                    el: desc.el.archive
-                });
-            }
+            // if (desc.el.archive) {
+            //     me.archive = new SalviaArchive({
+            //         el: desc.el.archive
+            //     });
+            // }
         }, function (reason) {
             console.error('Salvia: Failed loading all configuration file.');
         });
@@ -199,7 +221,7 @@
         this.posts = [];
         let feedBaseNode = document.querySelector(this.el);
         feedBaseNode.className = 'salvia-container';
-        let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(a.date) - new Date(b.date)));
+        let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(b.date) - new Date(a.date)));
         let postRequests = [];
         for (let i = 0; i < postsMeta.length; i++) {
             let articleNode = quickCreate('article', 'salvia-post');
@@ -349,4 +371,4 @@
         window.Salvia = Salvia;
     }
 
-})(window, commonmark, Prism);
+})(window, commonmark, Prism, PrismStyles);
