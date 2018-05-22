@@ -1,6 +1,6 @@
 # SalviaJS
 
-A fast and easy blog framework featuring minimum building. Only some optional configurations would be built, and posts in Markdown would be parsed on-the-fly.
+A fast and easy blog framework featuring minimum building. Only metadata of posts need to be built. Posts in Markdown would be parsed on-the-fly.
 
 ![Sage](./assets/sage.jpg)
 
@@ -15,11 +15,10 @@ No need to install.
 
 ## Quick Start
 
-Just include necessary files:
+Using CDN is the easiest way:
 
 ```html
-<link href="./css/prism.css" rel="stylesheet" />
-<script src="./js/salvia.min.js"></script>
+<script src="https://rawgit.com/mriiiron/salvia/master/dist/salvia.min.js"></script>
 ```
 
 Construct some markup:
@@ -42,7 +41,13 @@ let blog = new Salvia({
 });
 ```
 
-[View Full Guide](http://caiyi.us/salvia/post.html?postKey=quick_start)
+[View Full Guide](http://caiyi.us/salvia/docs.html)
+
+## To-do
+
+[ ] Pagination
+[ ] `npm install salvia-cli`
+[ ] `salvia init`
 
 ## License
 
