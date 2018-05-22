@@ -45,9 +45,9 @@ let blog = new Salvia({
 
 ## To-do
 
-[ ] Pagination
-[ ] `npm install salvia-cli`
-[ ] `salvia init`
+- [ ] Pagination
+- [ ] `npm install salvia-cli`
+- [ ] `salvia init`
 
 ## License
 
