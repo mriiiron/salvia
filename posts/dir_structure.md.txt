@@ -9,7 +9,7 @@ tags:       guide
 A basic Salvia project follows the structure below:
 
 ```bash
-root
+myblog
 ├── posts
 |   ├── your_post.md.txt
 |   └── your_another_post.md.txt
