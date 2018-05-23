@@ -6,7 +6,7 @@
         postsMetaFile: './salvia.posts.json',
         postsPath: './posts/',
         themesPath: './themes/',
-        postReaderPage: './post.html',
+        postReaderPage: './post.html'
     };
 
     function ajax(url, returnType) {
@@ -359,7 +359,10 @@
         let ul = quickCreate('ul', 'salvia-post-list');
         for (let i = 0; i < postsMeta.length; i++) {
             let meta = postsMeta[i];
-            let li = quickCreate('li', null, '<small>' + meta.date.replace(/T.*$/g, '') + '</small>&nbsp;<a href="#">' + meta.title + '</a>');
+
+            // TODO
+
+            let li = quickCreate('li', null, '<small>' + meta.date.replace(/T.*$/g, '') + '</small>&nbsp;<a href="' + config.postReaderPage + '?postKey=' + meta.key + '">' + meta.title + '</a>');
             ul.appendChild(li);
         }
         listBaseNode.appendChild(ul);
