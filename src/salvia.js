@@ -9,24 +9,6 @@
         postReaderPage: './post.html',
     };
 
-    function ajaxGet(url, returnType, onSuccess, onFailure) {
-        let xhr = new XMLHttpRequest();
-        xhr.responseType = returnType;
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    onSuccess(xhr.status, xhr.response);
-                }
-                else {
-                    onFailure(xhr.status, xhr.response);
-                    console.error('AJAX request to', url, 'failed. Got status', xhr.status);
-                }
-            }
-        }
-        xhr.open('GET', url);
-        xhr.send();
-    }
-
     function ajax(url, returnType) {
         return new Promise(function(resolve, reject) {
             let request = new XMLHttpRequest();
@@ -165,13 +147,33 @@
                     console.error('Salvia: Cannot find element "' + desc.el.post + '"');
                 }
             }
-            // if (desc.el.archive) {
-            //     me.archive = new SalviaArchive({
-            //         el: desc.el.archive
-            //     });
+            if (desc.el.postList) {
+                if (document.querySelector(desc.el.postList)) {
+                    me.postList = new SalviaPostList({
+                        master: me,
+                        el: desc.el.postList,
+                        postsMeta: postsMeta
+                    });
+                }
+                else {
+                    console.error('Salvia: Cannot find element "' + desc.el.postList + '"');
+                }
+            }
+            // if (desc.el.component) {
+            //     if (document.querySelector(desc.el.component)) {
+            //         me.component = new SalviaComponent({
+            //             master: me,
+            //             el: desc.el.component,
+            //             blogMeta: blogMeta,
+            //             postsMeta: postsMeta
+            //         });
+            //     }
+            //     else {
+            //         console.error('Salvia: Cannot find element "' + desc.el.component + '"');
+            //     }
             // }
         }, function (reason) {
-            console.error('Salvia: Failed loading all configuration file.');
+            console.error('Salvia: Failed loading configuration file(s).');
         });
     }
 
@@ -206,7 +208,7 @@
 
     function SalviaFooter(desc) {
         this.el = desc.el;
-        let copyrightNode = quickCreate('div', 'salvia-copyright', 'Powered by <a href="http://caiyi.us/salvia">Salvia</a>, handcrafted by <a href="http://caiyi.us">mriiiron</a>. MIT License. Copyright (c) 2017-2018.');
+        let copyrightNode = quickCreate('div', 'salvia-copyright', 'Powered by <a href="http://caiyi.us/salvia">Salvia</a>, a blog engine handcrafted by <a href="http://caiyi.us">mriiiron</a>. MIT License. Copyright (c) 2017-2018');
         let footerInnerNode = quickCreate('div', 'salvia-footer-inner');
         footerInnerNode.appendChild(copyrightNode);
         let footerBaseNode = document.querySelector(this.el);
@@ -342,29 +344,20 @@
     };
 
 
-    function SalviaArchive(desc) {
+    function SalviaPostList(desc) {
+        this.master = desc.master;
         this.el = desc.el;
-        let archiveBaseNode = document.querySelector(this.el);
-        archiveBaseNode.className = 'salvia-container';
-        archiveBaseNode.innerText = 'Coming soon!';
-    }
-
-    SalviaArchive.prototype.render = function (data) {
-        let ul = document.createElement('ul');
-        for (let i = 0; i < data.length; i++) {
-            let li = document.createElement('li');
-            li.innerHTML = '<a href="#' + data[i] + '">' + data[i] + '</a>';
+        this.posts = [];
+        let listBaseNode = document.querySelector(this.el);
+        let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(b.date) - new Date(a.date)));
+        let ul = quickCreate('ul', 'salvia-post-list');
+        for (let i = 0; i < postsMeta.length; i++) {
+            let meta = postsMeta[i];
+            let li = quickCreate('li', null, '<small>' + meta.date.replace(/T.*$/g, '') + '</small>&nbsp;<a href="#">' + meta.title + '</a>');
             ul.appendChild(li);
         }
-        ul.addEventListener('click', function (event) {
-            if (event.target.tagName.toLowerCase() == 'a') {
-                let a = event.target;
-                // me.request(a.hash, () => console.log('Request completed.'));
-            }
-        });
-        document.querySelector(this.postList.el).appendChild(ul);
-    };
-
+        listBaseNode.appendChild(ul);
+    }
 
 
     if (typeof (window.Salvia) === 'undefined') {

@@ -45,7 +45,11 @@ let blog = new Salvia({
 
 ## To-do
 
-[ ] Pagination
+[ ] Feed: Pagination
+[ ] Post Page: Display of Category, Tags
+[ ] SalviaPostList
+[ ] SalviaCategoryList
+[ ] SalviaTagCloud
 [ ] `npm install salvia-cli`
 [ ] `salvia init`
 
