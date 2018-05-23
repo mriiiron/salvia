@@ -19,6 +19,7 @@
     --c-lighter: #f6f4f9;
     --c-green: #97ae76;
     --c-text: #555;
+    --c-text-light: #aaa;
 }
 
 
@@ -114,6 +115,18 @@ a:hover {
     width: 900px;
     margin: auto;
     flex: 1 0 auto;
+}
+
+.salvia-post-meta {
+    margin: 0;
+    padding: 0;
+    font-size: 0.9em;
+    color: var(--c-text-light);
+}
+
+.salvia-post-meta li {
+    display: inline-block;
+    margin-right: 20px;
 }
 
 .salvia-post {

@@ -45,13 +45,13 @@ let blog = new Salvia({
 
 ## To-do
 
-[ ] Feed: Pagination
-[ ] Post Page: Display of Category, Tags
-[ ] SalviaPostList
-[ ] SalviaCategoryList
-[ ] SalviaTagCloud
-[ ] `npm install salvia-cli`
-[ ] `salvia init`
+- [ ] Feed: Pagination
+- [x] Post Page: Display of Category, Tags
+- [x] SalviaPostList
+- [ ] SalviaCategoryList
+- [ ] SalviaTagCloud
+- [ ] `npm install salvia-cli`
+- [ ] `salvia init`
 
 ## License
 

@@ -258,7 +258,9 @@
             key: desc.meta.key,
             title: desc.meta.title,
             date: new Date(desc.meta.date),
-            author: desc.meta.author
+            author: desc.meta.author,
+            category: desc.meta.category,
+            tags: desc.meta.tags
         };
         this.html = null;
     }
@@ -316,7 +318,11 @@
     SalviaPost.prototype.render = function () {
         let article = this.node;
         let postTitle = quickCreate('h1', 'salvia-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.meta.key + '">' + this.meta.title + '</a>');
-        let postMeta = quickCreate('p', 'salvia-post-meta', '<i><span class="salvia-post-date">' + this.meta.date.toISOString().replace(/T.*$/g, '') + '</span> by <span class="salvia-post-author">' + this.meta.author + '</span></i>');
+        let metaDate = '<li>Posted: ' + this.meta.date.toISOString().replace(/T.*$/g, '') + '</li>';
+        let metaAuthor = '<li>Author: ' + this.meta.author + '</li>';
+        let metaCategory = '<li>Category: ' + this.meta.category + '</li>';
+        let metaTags = '<li>Tags: ' + this.meta.tags + '</li>';
+        let postMeta = quickCreate('ul', 'salvia-post-meta', metaDate + metaAuthor + metaCategory + metaTags);
         let postContent = quickCreate('div', 'salvia-post-content', this.html);
         article.className = 'salvia-post';
         article.innerHTML = '';
