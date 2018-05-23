@@ -320,8 +320,8 @@
         let postTitle = quickCreate('h1', 'salvia-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.meta.key + '">' + this.meta.title + '</a>');
         let metaDate = '<li>Posted: ' + this.meta.date.toISOString().replace(/T.*$/g, '') + '</li>';
         let metaAuthor = '<li>Author: ' + this.meta.author + '</li>';
-        let metaCategory = '<li>Category: ' + this.meta.category + '</li>';
-        let metaTags = '<li>Tags: ' + this.meta.tags + '</li>';
+        let metaCategory = (this.meta.category ? '<li>Category: ' + this.meta.category + '</li>' : '');
+        let metaTags = (this.meta.tags.length > 0 ? '<li>Tags: ' + this.meta.tags + '</li>' : '');
         let postMeta = quickCreate('ul', 'salvia-post-meta', metaDate + metaAuthor + metaCategory + metaTags);
         let postContent = quickCreate('div', 'salvia-post-content', this.html);
         article.className = 'salvia-post';
