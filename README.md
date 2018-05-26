@@ -10,21 +10,33 @@ A fast and easy blog framework featuring minimum building. Only metadata of post
 - Parser based on [CommonMark](https://github.com/commonmark/commonmark.js), enhanced with [more useful features](http://caiyi.us/salvia/post.html?postKey=api_doc).
 - Provided `salvia-cli` for easy blogging.
 
-## Installation
-
-Coming soon...
-
 ## Quick Start
 
-Using CDN is the easiest way:
+### Via npm
 
-```html
+``` bash
+// Install CLI
+$ npm install -g salvia-cli
+
+// Start your blog in "myblog" folder
+$ salvia init myblog
+```
+
+> Note: I have not implemented local serving yet. Please use other methods to do local testing (e.g. IIS).
+
+### Manually
+
+[Follow Full Guide](http://caiyi.us/salvia/docs.html) to set up proper folder structure.
+
+In your page, link script:
+
+``` html
 <script src="https://rawgit.com/mriiiron/salvia/master/dist/salvia.min.js"></script>
 ```
 
 Construct some markup:
 
-```html
+``` html
 <header id="header"></header>
 <main id="feed"></main>
 <footer id="footer"></footer>
@@ -32,7 +44,7 @@ Construct some markup:
 
 And here we go.
 
-```javascript
+``` javascript
 let blog = new Salvia({
     el: {
         header: '#header',
@@ -42,7 +54,7 @@ let blog = new Salvia({
 });
 ```
 
-[View Full Guide](http://caiyi.us/salvia/docs.html)
+> Note: API Documentation on the way ...
 
 ## To-do
 
