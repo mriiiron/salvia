@@ -14,13 +14,19 @@ A fast and easy blog framework featuring minimum building. Only metadata of post
 
 ### Via npm
 
-``` bash
-// Install CLI
-$ npm install -g salvia-cli
+Install CLI:
 
-// Start your blog in "myblog" folder
+``` bash
+$ npm install -g salvia-cli
+```
+
+Start your blog in "myblog" folder:
+
+``` bash
 $ salvia init myblog
 ```
+
+You're all set.
 
 > Note: I have not implemented local serving yet. Please use other methods to do local testing (e.g. IIS).
 
