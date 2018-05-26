@@ -8,10 +8,11 @@ A fast and easy blog framework featuring minimum building. Only metadata of post
 
 - [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG), and forget about the time you wasted while generating massive number of posts.
 - Parser based on [CommonMark](https://github.com/commonmark/commonmark.js), enhanced with [more useful features](http://caiyi.us/salvia/post.html?postKey=api_doc).
+- Provided `salvia-cli` for easy blogging.
 
 ## Installation
 
-No need to install.
+Coming soon...
 
 ## Quick Start
 
@@ -50,8 +51,6 @@ let blog = new Salvia({
 - [x] SalviaPostList
 - [ ] SalviaCategoryList
 - [ ] SalviaTagCloud
-- [ ] `npm install salvia-cli`
-- [ ] `salvia init`
 
 ## License
 
