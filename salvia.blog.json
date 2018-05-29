@@ -1,7 +1,7 @@
 {
     "blog": {
         "title": "SalviaJS",
-        "theme": "sage-violet"
+        "theme": "noir"
     },
     "nav": [
         { "text": "Home", "href": "./index.html" },

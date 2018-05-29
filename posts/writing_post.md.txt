@@ -8,7 +8,7 @@ tags:       guide
 
 Create a text file `hello.md.txt` inside `post` folder with following contents:
 
-````
+```` markdown
 ```
 title:      Hello world!
 author:     Salvia

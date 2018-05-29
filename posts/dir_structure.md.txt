@@ -6,9 +6,9 @@ category:   Guide
 tags:       guide
 ```
 
-A basic Salvia project follows the structure below:
+Upon initialized, your blog folder follows the structure below:
 
-```bash
+``` any
 myblog
 ├── posts
 |   ├── your_post.md.txt

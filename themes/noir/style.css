@@ -4,20 +4,20 @@
 }
 
 @font-face {
-    font-family: "Reenie Beanie";
-    src: url("http://caiyi.us/vault/fonts/Reenie%20Beanie/ReenieBeanie.ttf");
+    font-family: "Calligraffitti";
+    src: url("http://caiyi.us/vault/fonts/Calligraffitti/Calligraffitti-Regular.ttf");
 }
-
 
 
 /* Color Palette: http://paletton.com/#uid=14w0u0k6qHZ0NYI35RWaHwbg1qK */
 :root {
-    --c-darker: #6d4e90;
-    --c-dark: #9178ad;
-    --c-medium: #baa8ce;
-    --c-light: #ddd3e8;
-    --c-lighter: #f6f4f9;
-    --c-green: #97ae76;
+    --c-darker: #232322;
+    --c-dark: #5b5b5b;
+    --c-medium: #878787;
+    --c-light: #b0b0b0;
+    --c-lighter: #dfe0df;
+    --c-main: #127eb2;
+    --c-main-light: #59a5ca;
     --c-text: #555;
     --c-text-light: #aaa;
 }
@@ -37,23 +37,23 @@ body {
 
 a {
     text-decoration: none;
-    color: var(--c-dark);
-    transition: color .25s;
+    color: var(--c-main);
 }
 
 a:hover {
-    color: var(--c-green);
+    color: var(--c-main-light);
 }
 
 .salvia-header {
-    background-color: var(--c-dark);
+    background-color: var(--c-darker);
     color: var(--c-light);
     flex: 0 0 60px;
 }
 
 .salvia-header .salvia-title {
-    font-family: 'Reenie Beanie';
-    font-size: 2.5em;
+    font-family: 'Calligraffitti';
+    font-size: 1.5em;
+    letter-spacing: 2px;
 }
 
 .salvia-header .salvia-title .salvia-logo {
@@ -106,31 +106,14 @@ a:hover {
     padding: 0 10px;
 }
 
-.salvia-title {
-    font-size: 1.5em;
-    letter-spacing: 2px;
-}
-
 .salvia-container {
     width: 900px;
-    margin: auto;
+    margin: 120px auto 0 auto;
     flex: 1 0 auto;
 }
 
-.salvia-post-meta {
-    margin: 0;
-    padding: 0;
-    font-size: 0.9em;
-    color: var(--c-text-light);
-}
-
-.salvia-post-meta li {
-    display: inline-block;
-    margin-right: 20px;
-}
-
 .salvia-post {
-    margin-bottom: 50px;
+    margin-bottom: 80px;
     padding-bottom: 25px;
     border-bottom: 1px solid var(--c-lighter);
 }
@@ -141,6 +124,10 @@ a:hover {
 
 .salvia-post-title {
     letter-spacing: 1px;
+}
+
+.salvia-post-title a {
+    color: inherit;
 }
 
 .salvia-post h1, .salvia-post h2, .salvia-post h3, .salvia-post h4, .salvia-post h5, .salvia-post h6 {
@@ -195,4 +182,32 @@ a:hover {
     border-left: none;
     margin: 0 40px;
     color: #333;
+}
+
+.salvia-post img {
+    max-width: 600px;
+}
+
+.salvia-post .salvia-post-meta {
+    margin: 0;
+    padding: 0;
+    font-size: 0.9em;
+    color: var(--c-text-light);
+}
+
+.salvia-post .salvia-post-meta li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.salvia-post .salvia-post-content {
+
+}
+
+.salvia-post-list li {
+    margin-bottom: 10px;
+}
+
+.salvia-post-list small {
+    margin-right: 10px;
 }
