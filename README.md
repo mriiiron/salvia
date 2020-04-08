@@ -28,7 +28,7 @@ $ salvia init myblog
 
 You're all set.
 
-> Note: I have not implemented local serving yet. Please use other methods to do local testing (e.g. IIS).
+> Note: I have not implemented local serving yet. Please use other methods to do local testing (e.g. IIS or httpd).
 
 ### Manually
 
