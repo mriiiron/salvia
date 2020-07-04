@@ -94,6 +94,7 @@
                 if (document.querySelector(desc.el.footer)) {
                     me.footer = new SalviaFooter({
                         el: desc.el.footer,
+                        blogMeta: blogMeta
                     });
                 }
                 else {
@@ -127,7 +128,7 @@
                                 renderOptions: { abstractOnly: false }
                             });
                             let singlePostContainer = document.querySelector(desc.el.post);
-                            singlePostContainer.className = 'salvia-container';
+                            singlePostContainer.className = 'salvia-feed';
                             singlePostContainer.appendChild(articleNode);
                             me.post.request().then((value) => {
                                 me.post.parse(value);
@@ -208,7 +209,7 @@
 
     function SalviaFooter(desc) {
         this.el = desc.el;
-        let copyrightNode = quickCreate('div', 'salvia-copyright', 'Powered by <a href="http://caiyi.us/salvia">Salvia</a>, a blog engine handcrafted by <a href="http://caiyi.us">mriiiron</a>. MIT License. Copyright (c) 2017-2018');
+        let copyrightNode = quickCreate('div', 'salvia-copyright', desc.blogMeta.copyright);
         let footerInnerNode = quickCreate('div', 'salvia-footer-inner');
         footerInnerNode.appendChild(copyrightNode);
         let footerBaseNode = document.querySelector(this.el);
@@ -222,7 +223,7 @@
         this.el = desc.el;
         this.posts = [];
         let feedBaseNode = document.querySelector(this.el);
-        feedBaseNode.className = 'salvia-container';
+        feedBaseNode.className = 'salvia-feed';
         let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(b.date) - new Date(a.date)));
         let postRequests = [];
         for (let i = 0; i < postsMeta.length; i++) {
@@ -349,7 +350,7 @@
         }
     };
 
-
+    
     function SalviaPostList(desc) {
         this.master = desc.master;
         this.el = desc.el;

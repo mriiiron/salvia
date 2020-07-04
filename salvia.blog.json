@@ -1,11 +1,12 @@
 {
     "blog": {
-        "title": "SalviaJS",
+        "title": "SALVIA",
         "theme": "noir"
     },
     "nav": [
-        { "text": "Home", "href": "./index.html" },
-        { "text": "Docs", "href": "./docs.html" },
-        { "text": "GitHub", "href": "https://github.com/mriiiron/salvia" }
-    ]
+        { "text": "HOME", "href": "./index.html" },
+        { "text": "DOCS", "href": "./docs.html" },
+        { "text": "GITHUB", "href": "https://github.com/mriiiron/salvia" }
+    ],
+    "copyright": "© 2020 <a href=\"https://mriiiron.github.io/salvia\">Salvia</a> - MIT License"
 }

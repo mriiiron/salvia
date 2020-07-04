@@ -4,12 +4,34 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <title>Documentation | SalviaJS</title>
+    <style>
+        main {
+            display: flex;
+        }
+        #feed {
+            width: 0;
+            flex: 1;
+        }
+        aside {
+            flex: 0 0 300px;
+        }
+    </style>
 </head>
 
 <body>
 
     <header id="header"></header>
-    <main id="feed"></main>
+    <main>
+        <div id="feed"></div>
+        <aside id="aside" class="salvia-sidebar">
+            <div class="salvia-widget">
+                <div class="salvia-widget-title">TABLE OF CONTENTS</div>
+                <div class="salvia-widget-content">
+                    <div id="post-list"></div>
+                </div>
+            </div>
+        </aside> 
+    </main>
     <footer id="footer"></footer>
 
     <script src="./src/commonmark.min.js"></script>
@@ -21,6 +43,7 @@
             el: {
                 header: '#header',
                 feed: '#feed',
+                postList: '#post-list',
                 footer: '#footer'
             }
         });

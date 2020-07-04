@@ -1,23 +1,20 @@
 @font-face {
     font-family: "Lato";
-    src: url("http://caiyi.tech/vault/fonts/Lato/Lato-Regular.ttf");
-}
-
-@font-face {
-    font-family: "Calligraffitti";
-    src: url("http://caiyi.tech/vault/fonts/Calligraffitti/Calligraffitti-Regular.ttf");
+    src: url("./Lato-Regular.ttf");
 }
 
 
-/* Color Palette: http://paletton.com/#uid=14w0u0k6qHZ0NYI35RWaHwbg1qK */
 :root {
-    --c-darker: #232322;
-    --c-dark: #5b5b5b;
+    --c-darker: #1f2124;
+    --c-dark: #383a3f;
     --c-medium: #878787;
-    --c-light: #b0b0b0;
+    --c-light: #b0b1b2;
     --c-lighter: #dfe0df;
-    --c-main: #127eb2;
-    --c-main-light: #59a5ca;
+    --c-lightest: #fafbfc;
+    --c-main-dark: #cf5a28;
+    --c-main: #f68657;
+    --c-main-light: #f6b352;
+    --c-main-lighter: #faeee0;
     --c-text: #555;
     --c-text-light: #aaa;
 }
@@ -28,7 +25,7 @@ html, body {
 }
 
 body {
-    font-family: "Lato", "Microsoft YaHei", Arial, sans-serif;
+    font-family: "Lato", "Microsoft Jhenghei", "Microsoft YaHei", Arial, sans-serif;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -37,22 +34,20 @@ body {
 
 a {
     text-decoration: none;
-    color: var(--c-main);
+    color: var(--c-main-dark);
 }
 
 a:hover {
-    color: var(--c-main-light);
+    color: var(--c-main);
 }
 
 .salvia-header {
     background-color: var(--c-darker);
-    color: var(--c-light);
-    flex: 0 0 60px;
+    color: var(--c-lighter);
+    flex: 0 0 50px;
 }
 
 .salvia-header .salvia-title {
-    font-family: 'Calligraffitti';
-    font-size: 1.5em;
     letter-spacing: 2px;
 }
 
@@ -62,19 +57,16 @@ a:hover {
     background-image: url(./temp-logo.png);
 }
 
-.salvia-header .salvia-title .salvia-title-text {
-}
-
 .salvia-header a {
-    color: var(--c-light);
-}
-
-.salvia-header a:hover {
     color: var(--c-lighter);
 }
 
+.salvia-header a:hover {
+    color: var(--c-light);
+}
+
 .salvia-header-inner {
-    width: 900px;
+    width: 1100px;
     height: 100%;
     margin: 0 auto;
     display: flex;
@@ -82,16 +74,20 @@ a:hover {
     justify-content: space-between;
 }
 
+main {
+    width: 1100px;
+    margin: 0 auto;
+    flex: 1;
+}
+
 .salvia-footer {
+    background-color: var(--c-darker);
+    color: var(--c-lighter);
     flex: 0 0 auto;
-    border-top: 1px solid var(--c-lighter);
+    padding: 10px 0;
 }
 
 .salvia-footer-inner {
-    width: 900px;
-    height: 100%;
-    margin: 0 auto;
-    padding: 10px 0;
     text-align: center;
 }
 
@@ -104,17 +100,46 @@ a:hover {
 .salvia-nav ul li {
     display: inline-block;
     padding: 0 10px;
+    font-size: .7em;
+    letter-spacing: 1px;
 }
 
-.salvia-container {
-    width: 900px;
-    margin: 120px auto 0 auto;
-    flex: 1 0 auto;
+.salvia-sidebar {
+    box-sizing: border-box;
+    padding: 40px 15px 0 15px;
+}
+
+.salvia-widget {
+    margin-bottom: 40px;
+}
+
+.salvia-widget-title {
+    background-color: var(--c-darker);
+    text-align: center;
+    color: var(--c-lightest);
+    padding: 10px 0;
+    font-size: 0.7em;
+    letter-spacing: 2px;
+}
+
+.salvia-widget-content {
+    padding: 10px 0;
+}
+
+.salvia-widget-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.salvia-feed {
+    box-sizing: border-box;
+    padding: 40px 15px 0 15px;
 }
 
 .salvia-post {
-    margin-bottom: 80px;
-    padding-bottom: 25px;
+    margin-top: 0;
+    margin-bottom: 40px;
+    padding-bottom: 15px;
     border-bottom: 1px solid var(--c-lighter);
 }
 
@@ -123,6 +148,7 @@ a:hover {
 }
 
 .salvia-post-title {
+    margin-top: 0;
     letter-spacing: 1px;
 }
 
@@ -155,6 +181,7 @@ a:hover {
     color: #eee;
     padding: 10px 20px;
     overflow-x: auto;
+    font-size: 0.5em;
 }
 
 .salvia-post pre code {
@@ -163,7 +190,7 @@ a:hover {
 }
 
 .salvia-post code {
-    background-color: #eee;
+    background-color: var(--c-main-lighter);;
     padding: 2px 4px;
 }
 
@@ -171,11 +198,15 @@ a:hover {
     border-left: 3px solid var(--c-light);
     margin: 25px 10px;
     padding: 7px 10px;
-    color: var(--c-darker)
+    color: var(--c-light)
 }
 
-.salvia-post blockquote p {
-    margin: 0;
+.salvia-post blockquote p:first-child {
+    margin-top: 0;
+}
+
+.salvia-post blockquote p:last-child {
+    margin-bottom: 0;
 }
 
 .salvia-post h4 + blockquote {

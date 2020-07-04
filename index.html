@@ -5,28 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <title>SalviaJS</title>
     <style>
-        main {
-            color: #555;
-        }
-        main .wrap {
-            margin: auto;
-            text-align: center;
-        }
-        main h1 {
-            font-weight: normal;
-        }
-        main p {
-            margin: 0 auto 50px auto;
-        }
-        main a.button {
-            padding: 10px 20px;
-            background-color: #232322;
-            color: #f6f4f9;
-            transition: background-color .25s, color .25s;
-        }
-        main a.button:hover {
-            text-decoration: none;
-            background-color: #9178ad;
+        @font-face {
+            font-family: "rabiohead";
+            src: url("./assets/rabiohead.ttf");
         }
     </style>
 </head>
@@ -34,12 +15,11 @@
 <body>
 
     <header id="header"></header>
-    <main class="salvia-container">
-        <div class="wrap">
+    <main class="salvia-main">
+        <div class="wrap" style="text-align:center;margin:0 auto;">
             <img src="./assets/sage.jpg" />
-            <h1>A minimal-build static blog framework</h1>
-            <p>Salvia parses Markdown on the fly. Only metadata (e.g. tags) need to be pre-built, when user required.</p>
-            <div><a class="button" href="./docs.html">Get Started</a></div>
+            <h1 style="font-family:rabiohead,serif;font-weight:normal;letter-spacing:5px;margin-top:0"><i>SALVIA</i></h1>
+            <p>A static blog engine parsing Markdown on the fly. Only metadata need to be pre-built.</p>
         </div>
     </main>
     <footer id="footer"></footer>
