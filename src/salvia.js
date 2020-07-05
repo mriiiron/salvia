@@ -363,7 +363,7 @@
 
             // TODO
 
-            let li = quickCreate('li', null, '<small>' + meta.date.replace(/T.*$/g, '') + '</small>&nbsp;<a href="' + config.postReaderPage + '?postKey=' + meta.key + '">' + meta.title + '</a>');
+            let li = quickCreate('li', null, '<a href="' + config.postReaderPage + '?postKey=' + meta.key + '">' + meta.title + '</a><br /><small>' + meta.date.replace(/T.*$/g, '') + '</small>');
             ul.appendChild(li);
         }
         listBaseNode.appendChild(ul);
