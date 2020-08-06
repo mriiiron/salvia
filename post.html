@@ -20,19 +20,11 @@
 
 <body>
 
-    <header id="header"></header>
-    <main>
-        <div id="post"></div>
-        <aside class="salvia-sidebar">
-            <div class="salvia-widget">
-                <div class="salvia-widget-title">TABLE OF CONTENTS</div>
-                <div class="salvia-widget-content">
-                    <div id="post-list"></div>
-                </div>
-            </div>
-        </aside> 
-    </main>
-    <footer id="footer"></footer>
+    <div id="blog"></div>
+
+    <div id="test-widget-content">
+        <p>TEST WIDGET CONTENT</p>
+    </div>
 
     <script src="./src/commonmark.min.js"></script>
     <script src="./src/prism-styles.js"></script>
@@ -40,15 +32,22 @@
     <script src="./src/salvia.js"></script>
     <script>
         let blog = new Salvia({
-            el: {
-                header: '#header',
-                post: '#post',
-                postList: '#post-list',
-                footer: '#footer'
+            el: "#blog",
+            main: {
+                type: "singlePost",
+                postKey: Salvia.util.getUrlParamValue("postKey")
             },
-            options: {
-                postKey: Salvia.util.getUrlParamValue('postKey')
-            }
+            widgets: [
+                {
+                    title: "CUSTOM WIDGET",
+                    type: "custom",
+                    content: document.querySelector("#test-widget-content")
+                },
+                {
+                    title: "TABLE OF CONTENTS",
+                    type: "recentPosts"
+                }
+            ]
         });
     </script>
 

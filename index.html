@@ -13,16 +13,14 @@
 </head>
 
 <body>
+    
+    <div id="blog"></div>
 
-    <header id="header"></header>
-    <main>
-        <div class="wrap" style="text-align:center;margin:0 auto;">
-            <img src="./assets/sage.jpg" />
-            <h1 style="font-family:rabiohead,serif;font-weight:normal;letter-spacing:5px;margin-top:0"><i>SALVIA</i></h1>
-            <p>A static blog engine parsing Markdown on the fly. Only metadata need to be pre-built.</p>
-        </div>
-    </main>
-    <footer id="footer"></footer>
+    <div style="text-align:center;margin:0 auto" id="salvia-front">
+        <img src="./assets/sage.jpg" />
+        <h1 style="font-family:rabiohead,serif;font-weight:normal;letter-spacing:5px;margin-top:0"><i>SALVIA</i></h1>
+        <p>A static blog engine parsing Markdown on the fly. Only metadata need to be pre-built.</p>
+    </div>
 
     <script src="./src/commonmark.min.js"></script>
     <script src="./src/prism-styles.js"></script>
@@ -30,9 +28,10 @@
     <script src="./src/salvia.js"></script>
     <script>
         let blog = new Salvia({
-            el: {
-                header: '#header',
-                footer: '#footer'
+            el: "#blog",
+            main: {
+                type: "custom",
+                content: document.querySelector("#salvia-front")
             }
         });
     </script>

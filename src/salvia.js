@@ -2,7 +2,7 @@
     'use strict'
 
     const config = {
-        blogConfigFile: './salvia.blog.json',
+        commonConfigFile: './salvia.common.json',
         postsMetaFile: './salvia.posts.json',
         postsPath: './posts/',
         themesPath: './themes/',
@@ -58,121 +58,151 @@
 
     function Salvia(desc) {
         let me = this;
-        me.ready = desc.ready;
-
+        let blogBaseNode = document.querySelector(desc.el);
+        blogBaseNode.className = "salvia-blog";
         Promise.all([
-            ajax(config.blogConfigFile, 'json'),
+            ajax(config.commonConfigFile, 'json'),
             ajax(config.postsMetaFile, 'json')
         ]).then(function (values) {
 
-            let blogMeta = values[0];
+            // Load metadata
+            let commonConfig = values[0];
             let postsMeta = values[1];
 
             // Load theme
             let link = document.createElement("link");
             link.rel = "stylesheet";
             link.type = "text/css";
-            link.href = config.themesPath + blogMeta.blog.theme + '/style.css';
+            link.href = config.themesPath + commonConfig.theme + '/style.css';
             document.head.appendChild(link);
 
             // Load Prism styles for code highlight
             document.head.appendChild(PrismStyles);
 
-            // Construct blog components
-            if (desc.el.header) {
-                if (document.querySelector(desc.el.header)) {
-                    me.header = new SalviaHeader({
-                        el: desc.el.header,
-                        blogMeta: blogMeta
-                    });
-                }
-                else {
-                    console.error('Salvia: Cannot find element "' + desc.el.header + '"');
-                }
+            // Header
+            let blogTitle = "";
+            let blogNav = [];
+            if (commonConfig.hasOwnProperty("header")) {
+                blogTitle = commonConfig.header.title;
+                blogNav = commonConfig.header.nav;
             }
-            if (desc.el.footer) {
-                if (document.querySelector(desc.el.footer)) {
-                    me.footer = new SalviaFooter({
-                        el: desc.el.footer,
-                        blogMeta: blogMeta
-                    });
-                }
-                else {
-                    console.error('Salvia: Cannot find element "' + desc.el.footer + '"');
-                }
+            let titleNode = quickCreate('div', 'salvia-title', '<a href="./index.html">' + blogTitle + '</a>');
+            let extraHTML = '';
+            for (let i = 0; i < blogNav.length; i++) {
+                let nav = blogNav[i];
+                extraHTML = extraHTML + '<li><a href="' + nav.href + '">' + nav.text + '</a></li>';
             }
-            if (desc.el.feed) {
-                if (document.querySelector(desc.el.feed)) {
-                    me.feed = new SalviaFeed({
+            let navNode = quickCreate('nav', 'salvia-nav', '<ul>' + extraHTML + '</ul>');
+            let headerInnerNode = quickCreate('div', 'salvia-header-inner');
+            headerInnerNode.appendChild(titleNode);
+            headerInnerNode.appendChild(navNode);
+            let headerBaseNode = quickCreate('header', 'salvia-header');
+            headerBaseNode.appendChild(headerInnerNode);
+            blogBaseNode.appendChild(headerBaseNode);
+            
+            let mainNode = quickCreate('main', 'salvia-main');
+            
+            // Content - Main
+            let innerMainNode = quickCreate('div', 'salvia-main-content');
+            let mainConfig = desc.main;
+            if (mainConfig.type == "feed") {
+                let pagination = mainConfig.hasOwnProperty("pagination") ? mainConfig.pagination : false;
+                if (pagination) {
+                    me.main = new SalviaFeed({
                         master: me,
-                        el: desc.el.feed,
-                        blogMeta: blogMeta,
-                        postsMeta: postsMeta
+                        node: innerMainNode,
+                        postsMeta: postsMeta,
+                        limit: pagination.limit,
+                        page: pagination.page
                     });
-                }
-                else {
-                    console.error('Salvia: Cannot find element "' + desc.el.feed + '"');
-                }
+                }                
             }
-            if (desc.el.post) {
-                if (document.querySelector(desc.el.post)) {
-                    let isLoaded = false;
-                    for (let i = 0; i < postsMeta.posts.length; i++) {
-                        let postMeta = postsMeta.posts[i];
-                        if (desc.options.postKey == postMeta.key) {
-                            let articleNode = quickCreate('article');
-                            me.post = new SalviaPost({
-                                master: me,
-                                node: articleNode,
-                                meta: postMeta,
-                                renderOptions: { abstractOnly: false }
-                            });
-                            let singlePostContainer = document.querySelector(desc.el.post);
-                            singlePostContainer.className = 'salvia-feed';
-                            singlePostContainer.appendChild(articleNode);
-                            me.post.request().then((value) => {
-                                me.post.parse(value);
-                                me.done();
-                            }, function (reason) {
-                                console.error(reason);
-                            });
-                            isLoaded = true;
-                            break;
-                        }
-                    }
-                    if (!isLoaded) {
-                        console.error('Salvia: Cannot find post with key "' + desc.options.postKey + '".');
+            else if (mainConfig.type == "singlePost") {
+                let isLoaded = false;
+                for (let i = 0; i < postsMeta.posts.length; i++) {
+                    let postMeta = postsMeta.posts[i];
+                    if (mainConfig.postKey == postMeta.key) {
+                        let articleNode = quickCreate('article', 'salvia-post');
+                        me.main = new SalviaPost({
+                            master: me,
+                            node: articleNode,
+                            meta: postMeta,
+                            renderOptions: { abstractOnly: false }
+                        });
+                        innerMainNode.appendChild(articleNode);
+                        me.main.request().then((value) => {
+                            me.main.parse(value);
+                            me.done();
+                        }, function (reason) {
+                            console.error(reason);
+                        });
+                        isLoaded = true;
+                        break;
                     }
                 }
-                else {
-                    console.error('Salvia: Cannot find element "' + desc.el.post + '"');
+                if (!isLoaded) {
+
+                    // TODO: 404 here
+
+                    console.error('Salvia: Cannot find post with key "' + desc.options.postKey + '".');
                 }
             }
-            if (desc.el.postList) {
-                if (document.querySelector(desc.el.postList)) {
-                    me.postList = new SalviaPostList({
-                        master: me,
-                        el: desc.el.postList,
-                        postsMeta: postsMeta
-                    });
-                }
-                else {
-                    console.error('Salvia: Cannot find element "' + desc.el.postList + '"');
+            else if (mainConfig.type == "custom") {
+                innerMainNode.appendChild(mainConfig.content);
+            }
+            mainNode.appendChild(innerMainNode);
+            
+            // Content - Sidebar
+            let sidebarNode = quickCreate('aside', 'salvia-sidebar');
+            let widgetConfigs = desc.widgets;
+            me.widgets = [];
+            if (Array.isArray(widgetConfigs)) {
+                for (let i = 0; i < widgetConfigs.length; i++) {
+                    let widgetContentNode = quickCreate('div', 'salvia-widget-content');
+                    let widgetConfig = widgetConfigs[i];
+                    if (widgetConfig.type == "recentPosts") {
+                        let limit = widgetConfig.hasOwnProperty("limit") ? widgetConfig.limit : 0;
+                        let widget = new SalviaPostList({
+                            master: me,
+                            node: widgetContentNode,
+                            postsMeta: postsMeta,
+                            limit: limit
+                        });
+                        me.widgets.push(widget);
+                    }
+                    else if (widgetConfig.type == "custom") {
+                        widgetContentNode.appendChild(widgetConfig.content);
+                    }
+                    else {
+                        continue;
+                    }
+                    let widgetNode = quickCreate('div', 'salvia-widget');
+                    let widgetTitleNode = quickCreate('div', 'salvia-widget-title', widgetConfig.title);
+                    widgetNode.appendChild(widgetTitleNode);
+                    widgetNode.appendChild(widgetContentNode);
+                    sidebarNode.appendChild(widgetNode);
                 }
             }
-            // if (desc.el.component) {
-            //     if (document.querySelector(desc.el.component)) {
-            //         me.component = new SalviaComponent({
-            //             master: me,
-            //             el: desc.el.component,
-            //             blogMeta: blogMeta,
-            //             postsMeta: postsMeta
-            //         });
-            //     }
-            //     else {
-            //         console.error('Salvia: Cannot find element "' + desc.el.component + '"');
-            //     }
-            // }
+            if (me.widgets.length > 0) {
+                mainNode.appendChild(sidebarNode);
+            }
+
+            
+            blogBaseNode.appendChild(mainNode);
+            
+            // Footer
+            let blogFooterText = "";
+            if (commonConfig.hasOwnProperty("footer")) {
+                blogFooterText = commonConfig.footer.text;
+            }
+            let copyrightNode = quickCreate('div', 'salvia-copyright', blogFooterText);
+            let footerInnerNode = quickCreate('div', 'salvia-footer-inner');
+            footerInnerNode.appendChild(copyrightNode);
+            let footerBaseNode = quickCreate('footer', 'salvia-footer');
+            footerBaseNode.appendChild(footerInnerNode);
+            blogBaseNode.appendChild(footerBaseNode);
+
+
         }, function (reason) {
             console.error('Salvia: Failed loading configuration file(s).');
         });
@@ -189,46 +219,23 @@
     }
 
 
-    function SalviaHeader(desc) {
-        this.el = desc.el;
-        let titleNode = quickCreate('div', 'salvia-title', '<a href="./index.html">' + desc.blogMeta.blog.title + '</a>');
-        let extraHTML = '';
-        for (let i = 0; i < desc.blogMeta.nav.length; i++) {
-            let page = desc.blogMeta.nav[i];
-            extraHTML = extraHTML + '<li><a href="' + page.href + '">' + page.text + '</a></li>';
-        }
-        let navNode = quickCreate('nav', 'salvia-nav', '<ul>' + extraHTML + '</ul>');
-        let headerInnerNode = quickCreate('div', 'salvia-header-inner');
-        headerInnerNode.appendChild(titleNode);
-        headerInnerNode.appendChild(navNode);
-        let headerBaseNode = document.querySelector(this.el);
-        headerBaseNode.className = 'salvia-header';
-        headerBaseNode.appendChild(headerInnerNode);
-    }
-
-
-    function SalviaFooter(desc) {
-        this.el = desc.el;
-        let copyrightNode = quickCreate('div', 'salvia-copyright', desc.blogMeta.copyright);
-        let footerInnerNode = quickCreate('div', 'salvia-footer-inner');
-        footerInnerNode.appendChild(copyrightNode);
-        let footerBaseNode = document.querySelector(this.el);
-        footerBaseNode.className = 'salvia-footer';
-        footerBaseNode.appendChild(footerInnerNode);
-    }
-
-
     function SalviaFeed(desc) {
         this.master = desc.master;
-        this.el = desc.el;
+        this.node = desc.node;
         this.posts = [];
-        let feedBaseNode = document.querySelector(this.el);
-        feedBaseNode.className = 'salvia-feed';
         let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(b.date) - new Date(a.date)));
+        let postCount = postsMeta.length;
         let postRequests = [];
-        for (let i = 0; i < postsMeta.length; i++) {
-            let articleNode = quickCreate('article', 'salvia-post');
-            feedBaseNode.appendChild(articleNode);
+        let limit = desc.limit;
+        let page = desc.page;
+
+        // Iterate posts
+        for (let i = limit * (page - 1); i < limit * page; i++) {
+            if (i >= postCount) {
+                break;
+            }
+            let articleNode = quickCreate("article", "salvia-post");
+            this.node.appendChild(articleNode);
             let post = new SalviaPost({
                 master: this.master,
                 node: articleNode,
@@ -238,6 +245,16 @@
             this.posts.push(post);
             postRequests.push(post.request());
         }
+
+        // Insert paginator
+        let ul = quickCreate('ul', 'salvia-paginator');
+        let pageCount = Math.ceil(postCount / limit);
+        for (let i = 1; i <= pageCount; i++) {
+            let self = window.location.href.split("?")[0];
+            let li = quickCreate('li', null, i == page ? '<b>' + i + '</b>' : '<a href="' + self + '?page=' + i + '">' + i + '</a>');
+            ul.appendChild(li);
+        }
+        this.node.appendChild(ul);
         Promise.all(postRequests).then((values) => {
             for (let i = 0; i < values.length; i++) {
                 this.posts[i].parse(values[i]);
@@ -247,7 +264,6 @@
             console.error(reason);
         });
     }
-
 
     function SalviaPost(desc) {
         this.master = desc.master;
@@ -353,12 +369,12 @@
     
     function SalviaPostList(desc) {
         this.master = desc.master;
-        this.el = desc.el;
         this.posts = [];
-        let listBaseNode = document.querySelector(this.el);
+        this.node = desc.node;
         let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(b.date) - new Date(a.date)));
+        let limit = desc.limit > 0 && desc.limit < postsMeta.length ? desc.limit : postsMeta.length;
         let ul = quickCreate('ul', 'salvia-post-list');
-        for (let i = 0; i < postsMeta.length; i++) {
+        for (let i = 0; i < limit; i++) {
             let meta = postsMeta[i];
 
             // TODO
@@ -366,7 +382,7 @@
             let li = quickCreate('li', null, '<a href="' + config.postReaderPage + '?postKey=' + meta.key + '">' + meta.title + '</a><br /><small>' + meta.date.replace(/T.*$/g, '') + '</small>');
             ul.appendChild(li);
         }
-        listBaseNode.appendChild(ul);
+        this.node.appendChild(ul);
     }
 
 

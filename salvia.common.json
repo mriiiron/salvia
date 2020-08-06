@@ -1,0 +1,14 @@
+{
+    "theme": "noir",
+    "header": {
+        "title": "SALVIA",
+        "nav": [
+            { "text": "HOME", "href": "./index.html" },
+            { "text": "DOCS", "href": "./docs.html" },
+            { "text": "GITHUB", "href": "https://github.com/mriiiron/salvia" }
+        ]
+    },
+    "footer": {
+        "text": "© 2020 <a href=\"https://mriiiron.github.io/salvia\">Salvia</a> &middot; MIT License"
+    }   
+}

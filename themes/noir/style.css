@@ -27,8 +27,6 @@ html, body {
 body {
     font-family: "Lato", "Microsoft Jhenghei", "Microsoft YaHei", Arial, sans-serif;
     margin: 0;
-    display: flex;
-    flex-direction: column;
     color: var(--c-text);
 }
 
@@ -41,20 +39,19 @@ a:hover {
     color: var(--c-main);
 }
 
+.salvia-blog {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 .salvia-header {
     background-color: var(--c-darker);
     color: var(--c-lighter);
-    flex: 0 0 50px;
 }
 
 .salvia-header .salvia-title {
     letter-spacing: 2px;
-}
-
-.salvia-header .salvia-title .salvia-logo {
-    height: 50px;
-    width: 50px;
-    background-image: url(./temp-logo.png);
 }
 
 .salvia-header a {
@@ -67,22 +64,34 @@ a:hover {
 
 .salvia-header-inner {
     width: 1100px;
-    height: 100%;
+    height: 50px;
     margin: 0 auto;
     display: flex;
     align-items: center;
 }
 
-main {
+.salvia-main {
     width: 1100px;
     margin: 60px auto 0 auto;
     flex: 1;
+    display: flex;
+}
+
+.salvia-paginator {
+    padding: 0;
+    list-style: none;
+    margin-top: 0;
+    margin-bottom: 40px;
+}
+
+.salvia-paginator li {
+    display: inline-block;
+    margin-right: 6px;
 }
 
 .salvia-footer {
     background-color: var(--c-darker);
     color: var(--c-lighter);
-    flex: 0 0 auto;
     padding: 10px 0;
 }
 
@@ -110,6 +119,7 @@ main {
 .salvia-sidebar {
     box-sizing: border-box;
     padding: 0 15px;
+    flex: 0 0 300px;
 }
 
 .salvia-widget {
@@ -135,7 +145,9 @@ main {
     padding-left: 0;
 }
 
-.salvia-feed {
+.salvia-main-content {
+    width: 0;
+    flex: 1;
     box-sizing: border-box;
     padding: 0 15px;
 }
