@@ -296,7 +296,7 @@
     }
 
     SalviaPost.prototype.request = function () {
-        return ajax(config.postsPath + this.meta.key + '.md.txt', 'text');
+        return ajax(config.postsPath + this.meta.key + '.md', 'text');
     };
 
     SalviaPost.prototype.parse = function (raw) {
