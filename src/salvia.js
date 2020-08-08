@@ -141,17 +141,25 @@
                     }
                 }
                 if (!isLoaded) {
-
                     // TODO: 404 here
-
                     console.error('Salvia: Cannot find post with key "' + desc.options.postKey + '".');
                 }
             }
             else if (mainConfig.type == "custom") {
                 innerMainNode.appendChild(mainConfig.content);
             }
+            if (mainConfig.comment) {
+                let commentNode = quickCreate('div', 'salvia-comment');
+                me.comment = new Valine({
+                    el: commentNode,
+                    path: "post:" + mainConfig.postKey,
+                    appId: commonConfig.valine.appId,
+                    appKey: commonConfig.valine.appKey
+                });
+                innerMainNode.appendChild(commentNode);
+            }
             mainNode.appendChild(innerMainNode);
-            
+
             // Content - Sidebar
             let sidebarNode = quickCreate('aside', 'salvia-sidebar');
             let widgetConfigs = desc.widgets;
@@ -199,10 +207,8 @@
             if (me.widgets.length > 0) {
                 mainNode.appendChild(sidebarNode);
             }
-
-            
             blogBaseNode.appendChild(mainNode);
-            
+
             // Footer
             let blogFooterText = "";
             if (commonConfig.hasOwnProperty("footer")) {
@@ -214,7 +220,6 @@
             let footerBaseNode = quickCreate('footer', 'salvia-footer');
             footerBaseNode.appendChild(footerInnerNode);
             blogBaseNode.appendChild(footerBaseNode);
-
 
         }, function (reason) {
             console.error('Salvia: Failed loading configuration file(s).');

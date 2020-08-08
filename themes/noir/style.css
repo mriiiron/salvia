@@ -93,6 +93,7 @@ a:hover {
     background-color: var(--c-darker);
     color: var(--c-lighter);
     padding: 10px 0;
+    font-size: .8em;
 }
 
 .salvia-footer-inner {
