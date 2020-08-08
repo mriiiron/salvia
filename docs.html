@@ -17,6 +17,7 @@
     <script src="./src/commonmark.min.js"></script>
     <script src="./src/prism-styles.js"></script>
     <script src="./src/prism.js"></script>
+    <script src="./src/TagCloud.min.js"></script>
     <script src="./src/salvia.js"></script>
     <script>
         let blog = new Salvia({
@@ -35,8 +36,16 @@
                     content: document.querySelector("#test-widget-content")
                 },
                 {
-                    title: "TABLE OF CONTENTS",
+                    title: "RECENT POSTS",
                     type: "recentPosts"
+                },
+                {
+                    title: "CATEGORIES",
+                    type: "categoryList"
+                },
+                {
+                    title: "TAG CLOUD",
+                    type: "tagCloud"
                 }
             ]
         });

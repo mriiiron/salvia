@@ -1,4 +1,4 @@
-(function (window, commonmark, Prism, PrismStyles) {
+(function (window, commonmark, Prism, PrismStyles, TagCloud) {
     'use strict'
 
     const config = {
@@ -162,11 +162,24 @@
                     let widgetConfig = widgetConfigs[i];
                     if (widgetConfig.type == "recentPosts") {
                         let limit = widgetConfig.hasOwnProperty("limit") ? widgetConfig.limit : 0;
-                        let widget = new SalviaPostList({
-                            master: me,
+                        let widget = new SalviaPostListWidget({
                             node: widgetContentNode,
                             postsMeta: postsMeta,
                             limit: limit
+                        });
+                        me.widgets.push(widget);
+                    }
+                    else if (widgetConfig.type == "tagCloud") {
+                        let widget = new SalviaTagCloudWidget({
+                            node: widgetContentNode,
+                            postsMeta: postsMeta
+                        });
+                        me.widgets.push(widget);
+                    }
+                    else if (widgetConfig.type == "categoryList") {
+                        let widget = new SalviaCategoryListWidget({
+                            node: widgetContentNode,
+                            postsMeta: postsMeta
                         });
                         me.widgets.push(widget);
                     }
@@ -367,19 +380,32 @@
     };
 
     
-    function SalviaPostList(desc) {
-        this.master = desc.master;
-        this.posts = [];
+    function SalviaPostListWidget(desc) {
         this.node = desc.node;
         let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(b.date) - new Date(a.date)));
         let limit = desc.limit > 0 && desc.limit < postsMeta.length ? desc.limit : postsMeta.length;
         let ul = quickCreate('ul', 'salvia-post-list');
         for (let i = 0; i < limit; i++) {
             let meta = postsMeta[i];
-
-            // TODO
-
             let li = quickCreate('li', null, '<a href="' + config.postReaderPage + '?postKey=' + meta.key + '">' + meta.title + '</a><br /><small>' + meta.date.replace(/T.*$/g, '') + '</small>');
+            ul.appendChild(li);
+        }
+        this.node.appendChild(ul);
+    }
+
+
+    function SalviaTagCloudWidget(desc) {
+        this.node = desc.node;
+        this.tagCloud = TagCloud(this.node, desc.postsMeta.tags);
+    }
+
+
+    function SalviaCategoryListWidget(desc) {
+        this.node = desc.node; 
+        let categoryList = desc.postsMeta.categories;
+        let ul = quickCreate('ul', 'salvia-category-list');
+        for (let i = 0; i < categoryList.length; i++) {
+            let li = quickCreate('li', null, '<a href="#">' + categoryList[i] + '</a>');
             ul.appendChild(li);
         }
         this.node.appendChild(ul);
@@ -390,4 +416,4 @@
         window.Salvia = Salvia;
     }
 
-})(window, commonmark, Prism, PrismStyles);
+})(window, commonmark, Prism, PrismStyles, TagCloud);

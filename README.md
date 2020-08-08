@@ -7,12 +7,12 @@ A fast and easy blog framework featuring minimum building. Only metadata of post
 ## Features
 
 - [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG), and forget about the time you wasted while generating massive number of posts.
-- Parser based on [CommonMark](https://github.com/commonmark/commonmark.js), enhanced with [more useful features](http://caiyi.us/salvia/post.html?postKey=api_doc).
-- Provided `salvia-cli` for easy blogging.
+- Parser based on [CommonMark](https://github.com/commonmark/commonmark.js), with more features extended.
+- Provided `salvia-cli` for easy blogging. [Get](https://github.com/mriiiron/salvia-cli)
 
 ## Quick Start
 
-### Via npm
+### Via npm (recommended)
 
 Install CLI:
 
@@ -28,47 +28,55 @@ $ salvia init myblog
 
 You're all set.
 
-> Note: I have not implemented local serving yet. Please use other methods to do local testing (e.g. IIS or httpd).
-
 ### Manually
 
-[Follow Full Guide](http://caiyi.us/salvia/docs.html) to set up proper folder structure.
+Follow [Full Guide](https://mriiiron.github.io/salvia) to set up proper folder structure and create your main page, post page, archive, page, etc.
 
 In your page, link script:
 
 ``` html
-<script src="https://rawgit.com/mriiiron/salvia/master/dist/salvia.min.js"></script>
+<script src="./js/salvia.min.js"></script>
 ```
 
-Construct some markup:
+Construct the container div:
 
 ``` html
-<header id="header"></header>
-<main id="feed"></main>
-<footer id="footer"></footer>
+<div id="blog"></div>
 ```
 
-And here we go.
+And construct the blog into the container:
 
 ``` javascript
 let blog = new Salvia({
-    el: {
-        header: '#header',
-        feed: '#feed',
-        footer: '#footer'
-    }
+    el: "#blog",
+    main: {
+        type: "feed",
+        pagination: {
+            limit: 5,
+            page: Salvia.util.getUrlParamValue("page") || 1
+        }
+    },
+    widgets: [
+        {
+            title: "TABLE OF CONTENTS",
+            type: "recentPosts"
+        },
+        {
+            title: "TAG CLOUD",
+            type: "tagCloud"
+        }
+    ]
 });
 ```
 
-> Note: API Documentation on the way ...
-
 ## To-do
 
-- [ ] Feed: Pagination
-- [x] Post Page: Display of Category, Tags
-- [x] SalviaPostList
-- [ ] SalviaCategoryList
-- [ ] SalviaTagCloud
+- [x] SalviaFeed (with pagination)
+- [x] SalviaPost
+- [x] SalviaArchives
+- [x] SalviaPostListWidget
+- [ ] SalviaCategoryListWidget
+- [x] SalviaTagCloudWidget
 
 ## License
 
