@@ -3,23 +3,31 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <title>Archives | Salvia</title>
+    <title>About | Salvia</title>
 </head>
 
 <body>
 
     <div id="blog"></div>
 
+    <div id="test-widget-content">
+        <p>TEST WIDGET CONTENT</p>
+    </div>
+
     <script src="./src/commonmark.min.js"></script>
     <script src="./src/prism-styles.js"></script>
     <script src="./src/prism.js"></script>
     <script src="./src/TagCloud.min.js"></script>
+    <script src='./src/Valine.min.js'></script>
     <script src="./src/salvia.js"></script>
+
     <script>
         let blog = new Salvia({
             el: "#blog",
             main: {
-                type: "archives"
+                type: "singlePost",
+                postKey: "source",
+                hideMeta: true
             }
         });
     </script>

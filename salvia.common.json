@@ -1,18 +1,18 @@
 {
     "theme": "noir",
     "header": {
-        "title": "SALVIA",
+        "title": "Salvia",
         "nav": [
             { "text": "HOME", "href": "./index.html" },
             { "text": "DOCS", "href": "./docs.html" },
-            { "text": "GITHUB", "href": "https://github.com/mriiiron/salvia" }
+            { "text": "SOURCE", "href": "./about.html" }
         ]
     },
     "footer": {
         "text": "© 2020 <a href=\"https://mriiiron.github.io/salvia\">Salvia</a> &middot; MIT License"
     },
     "valine": {
-        "appId": "kU5g0oMet1X9VyOBC1PFlVEG-gzGzoHsz",
-        "appKey": "D1t4ru2dflt1KMOWuvLBvgeE"
+        "appId": null,
+        "appKey": null
     }
 }

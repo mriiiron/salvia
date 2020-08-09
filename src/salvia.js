@@ -106,48 +106,59 @@
             let innerMainNode = quickCreate('div', 'salvia-main-content');
             let mainConfig = desc.main;
             if (mainConfig.type == "feed") {
-                let pagination = mainConfig.hasOwnProperty("pagination") ? mainConfig.pagination : false;
-                if (pagination) {
-                    me.main = new SalviaFeed({
-                        master: me,
-                        node: innerMainNode,
-                        postsMeta: postsMeta,
-                        limit: pagination.limit,
-                        page: pagination.page
-                    });
-                }                
+                me.main = new SalviaFeed({
+                    master: me,
+                    node: innerMainNode,
+                    postsMeta: postsMeta,
+                    pagination: mainConfig.pagination || null
+                });
             }
             else if (mainConfig.type == "singlePost") {
-                let isLoaded = false;
-                for (let i = 0; i < postsMeta.posts.length; i++) {
-                    let postMeta = postsMeta.posts[i];
-                    if (mainConfig.postKey == postMeta.key) {
-                        let articleNode = quickCreate('article', 'salvia-post');
-                        me.main = new SalviaPost({
-                            master: me,
-                            node: articleNode,
-                            meta: postMeta,
-                            renderOptions: { abstractOnly: false }
-                        });
-                        innerMainNode.appendChild(articleNode);
-                        me.main.request().then((value) => {
-                            me.main.parse(value);
-                            me.done();
-                        }, function (reason) {
-                            console.error(reason);
-                        });
-                        isLoaded = true;
-                        break;
+                let postMeta = postsMeta.posts.find(item => item.key == mainConfig.postKey);
+                let renderOptions = {
+                    abstractOnly: false,
+                    hideTitle: false,
+                    hideMeta: false
+                };
+                if (mainConfig.hideMeta) {
+                    renderOptions.hideMeta = true;
+                }
+                if (!postMeta) {
+                    postMeta = {
+                        key: "404",
+                        title: "404"
                     }
+                    renderOptions.hideTitle = true;
+                    renderOptions.hideMeta = true;
+                    mainConfig.comment = false;  // Force disabling comment in 404 page
                 }
-                if (!isLoaded) {
-                    // TODO: 404 here
-                    console.error('Salvia: Cannot find post with key "' + desc.options.postKey + '".');
-                }
+                document.title = postMeta.title + " | " + commonConfig.header.title;
+                let articleNode = quickCreate('article', 'salvia-post');
+                me.main = new SalviaPost({
+                    master: me,
+                    node: articleNode,
+                    meta: postMeta,
+                    renderOptions: renderOptions
+                });
+                innerMainNode.appendChild(articleNode);
+                me.main.request().then((value) => {
+                    me.main.parse(value);
+                    me.done();
+                }, function (reason) {
+                    console.error(reason);
+                });
+            }
+            else if (mainConfig.type == "archives") {
+                me.main = new SalviaArchives({
+                    master: me,
+                    node: innerMainNode,
+                    postsMeta: postsMeta
+                });
             }
             else if (mainConfig.type == "custom") {
                 innerMainNode.appendChild(mainConfig.content);
             }
+
             if (mainConfig.comment) {
                 let commentNode = quickCreate('div', 'salvia-comment');
                 me.comment = new Valine({
@@ -169,11 +180,11 @@
                     let widgetContentNode = quickCreate('div', 'salvia-widget-content');
                     let widgetConfig = widgetConfigs[i];
                     if (widgetConfig.type == "recentPosts") {
-                        let limit = widgetConfig.hasOwnProperty("limit") ? widgetConfig.limit : 0;
                         let widget = new SalviaPostListWidget({
                             node: widgetContentNode,
                             postsMeta: postsMeta,
-                            limit: limit
+                            limit: widgetConfig.limit || 0,
+                            linkToMore: widgetConfig.linkToMore || null
                         });
                         me.widgets.push(widget);
                     }
@@ -241,38 +252,56 @@
         this.master = desc.master;
         this.node = desc.node;
         this.posts = [];
-        let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(b.date) - new Date(a.date)));
+        let postsMeta = desc.postsMeta.posts.filter(item => !item.hidden).sort((a, b) => (new Date(b.date) - new Date(a.date)));
         let postCount = postsMeta.length;
         let postRequests = [];
-        let limit = desc.limit;
-        let page = desc.page;
 
-        // Iterate posts
-        for (let i = limit * (page - 1); i < limit * page; i++) {
-            if (i >= postCount) {
-                break;
+        if (desc.pagination) {
+            let limit = desc.pagination.limit;
+            let page = desc.pagination.page;
+
+            // Iterate posts
+            for (let i = limit * (page - 1); i < limit * page; i++) {
+                if (i >= postCount) {
+                    break;
+                }
+                let articleNode = quickCreate("article", "salvia-post");
+                this.node.appendChild(articleNode);
+                let post = new SalviaPost({
+                    master: this.master,
+                    node: articleNode,
+                    meta: postsMeta[i],
+                    renderOptions: { abstractOnly: true }
+                });
+                this.posts.push(post);
+                postRequests.push(post.request());
             }
-            let articleNode = quickCreate("article", "salvia-post");
-            this.node.appendChild(articleNode);
-            let post = new SalviaPost({
-                master: this.master,
-                node: articleNode,
-                meta: postsMeta[i],
-                renderOptions: { abstractOnly: true }
-            });
-            this.posts.push(post);
-            postRequests.push(post.request());
+
+            // Insert paginator
+            let ul = quickCreate('ul', 'salvia-paginator');
+            let pageCount = Math.ceil(postCount / limit);
+            for (let i = 1; i <= pageCount; i++) {
+                let self = window.location.href.split("?")[0];
+                let li = quickCreate('li', null, i == page ? '<b>' + i + '</b>' : '<a href="' + self + '?page=' + i + '">' + i + '</a>');
+                ul.appendChild(li);
+            }
+            this.node.appendChild(ul);
+        }
+        else {
+            for (let i = 0; i < postCount; i++) {
+                let articleNode = quickCreate("article", "salvia-post");
+                this.node.appendChild(articleNode);
+                let post = new SalviaPost({
+                    master: this.master,
+                    node: articleNode,
+                    meta: postsMeta[i],
+                    renderOptions: { abstractOnly: true }
+                });
+                this.posts.push(post);
+                postRequests.push(post.request());
+            }
         }
 
-        // Insert paginator
-        let ul = quickCreate('ul', 'salvia-paginator');
-        let pageCount = Math.ceil(postCount / limit);
-        for (let i = 1; i <= pageCount; i++) {
-            let self = window.location.href.split("?")[0];
-            let li = quickCreate('li', null, i == page ? '<b>' + i + '</b>' : '<a href="' + self + '?page=' + i + '">' + i + '</a>');
-            ul.appendChild(li);
-        }
-        this.node.appendChild(ul);
         Promise.all(postRequests).then((values) => {
             for (let i = 0; i < values.length; i++) {
                 this.posts[i].parse(values[i]);
@@ -281,21 +310,20 @@
         }, function (reason) {
             console.error(reason);
         });
+
     }
 
     function SalviaPost(desc) {
         this.master = desc.master;
         this.node = desc.node;
-        this.renderOptions = {
-            abstractOnly: desc.renderOptions.abstractOnly
-        };
+        this.renderOptions = desc.renderOptions;
         this.meta = {
             key: desc.meta.key,
             title: desc.meta.title,
             date: new Date(desc.meta.date),
             author: desc.meta.author,
             category: desc.meta.category,
-            tags: desc.meta.tags
+            tags: desc.meta.tags || []
         };
         this.html = null;
     }
@@ -352,17 +380,21 @@
 
     SalviaPost.prototype.render = function () {
         let article = this.node;
-        let postTitle = quickCreate('h1', 'salvia-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.meta.key + '">' + this.meta.title + '</a>');
-        let metaDate = '<li>Posted: ' + this.meta.date.toISOString().replace(/T.*$/g, '') + '</li>';
-        let metaAuthor = '<li>Author: ' + this.meta.author + '</li>';
-        let metaCategory = (this.meta.category ? '<li>Category: ' + this.meta.category + '</li>' : '');
-        let metaTags = (this.meta.tags.length > 0 ? '<li>Tags: ' + this.meta.tags + '</li>' : '');
-        let postMeta = quickCreate('ul', 'salvia-post-meta', metaDate + metaAuthor + metaCategory + metaTags);
-        let postContent = quickCreate('div', 'salvia-post-content', this.html);
         article.className = 'salvia-post';
         article.innerHTML = '';
-        article.appendChild(postTitle);
-        article.appendChild(postMeta);
+        if (!this.renderOptions.hideTitle) {
+            let postTitle = quickCreate('h1', 'salvia-post-title', '<a href="' + config.postReaderPage + '?postKey=' + this.meta.key + '">' + this.meta.title + '</a>');
+            article.appendChild(postTitle);
+        }
+        if (!this.renderOptions.hideMeta) {
+            let metaDate = '<li>Date: ' + (isNaN(this.meta.date.getTime()) ? "N/A" : this.meta.date.toISOString().replace(/T.*$/g, '')) + '</li>';
+            let metaAuthor = '<li>Author: ' + (this.meta.author || "N/A") + '</li>';
+            let metaCategory = '<li>Category: ' + (this.meta.category || "N/A") + '</li>';
+            let metaTags = '<li>Tags: ' + (this.meta.tags.length > 0 ? this.meta.tags.join(", ") : "N/A") + '</li>';
+            let postMeta = quickCreate('ul', 'salvia-post-meta', metaDate + metaAuthor + metaCategory + metaTags);
+            article.appendChild(postMeta);
+        }
+        let postContent = quickCreate('div', 'salvia-post-content', this.html);
         article.appendChild(postContent);
         let pTags = article.querySelectorAll('p');
         for (let i = 0; i < pTags.length; i++) {
@@ -384,18 +416,37 @@
         }
     };
 
-    
-    function SalviaPostListWidget(desc) {
+
+    function SalviaArchives(desc) {
         this.node = desc.node;
-        let postsMeta = desc.postsMeta.posts.sort((a, b) => (new Date(b.date) - new Date(a.date)));
-        let limit = desc.limit > 0 && desc.limit < postsMeta.length ? desc.limit : postsMeta.length;
+        let postsMeta = desc.postsMeta.posts.filter(item => !item.hidden).sort((a, b) => (new Date(b.date) - new Date(a.date)));
         let ul = quickCreate('ul', 'salvia-post-list');
-        for (let i = 0; i < limit; i++) {
+        for (let i = 0; i < postsMeta.length; i++) {
             let meta = postsMeta[i];
-            let li = quickCreate('li', null, '<a href="' + config.postReaderPage + '?postKey=' + meta.key + '">' + meta.title + '</a><br /><small>' + meta.date.replace(/T.*$/g, '') + '</small>');
+            let dateStr = meta.date ? meta.date.replace(/T.*$/g, '') : '';
+            let li = quickCreate('li', null, '<a href="' + config.postReaderPage + '?postKey=' + meta.key + '">' + meta.title + '</a><br /><small>' + dateStr + '</small>');
             ul.appendChild(li);
         }
         this.node.appendChild(ul);
+    }
+
+    
+    function SalviaPostListWidget(desc) {
+        this.node = desc.node;
+        let postsMeta = desc.postsMeta.posts.filter(item => !item.hidden).sort((a, b) => (new Date(b.date) - new Date(a.date)));
+        let ul = quickCreate('ul', 'salvia-post-list');
+        let limit = (desc.limit == 0 || desc.limit > postsMeta.length ? postsMeta.length : desc.limit);
+        let toCreateMoreLink = (limit < postsMeta.length); 
+        for (let i = 0; i < limit; i++) {
+            let meta = postsMeta[i];
+            let dateStr = meta.date ? meta.date.replace(/T.*$/g, '') : '';
+            let li = quickCreate('li', null, '<a href="' + config.postReaderPage + '?postKey=' + meta.key + '">' + meta.title + '</a><br /><small>' + dateStr + '</small>');
+            ul.appendChild(li);
+        }
+        this.node.appendChild(ul);
+        if (toCreateMoreLink) {
+            this.node.appendChild(quickCreate('p', null, '<a href="' + desc.linkToMore + '">More &hellip;</a>'));
+        }
     }
 
 
